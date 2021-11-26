@@ -191,11 +191,11 @@ static void update_position(
 		new_position_col = actor->col + 1;
 	}
 
-	if (!is_traversable_terrain(new_position_row, new_position_col)) {
+	if (!tile_is_traversable_terrain(new_position_row, new_position_col)) {
 		return;
 	}
 
-	if (is_occupied(new_position_row, new_position_col)) {
+	if (tile_is_occupied(new_position_row, new_position_col)) {
 		interact_with_occupant_of(new_position_row, new_position_col, actor);
 		return;
 	}

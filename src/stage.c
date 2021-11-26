@@ -29,14 +29,24 @@ void load_stage(enum stage_type s_type)
 	}
 }
 
-int is_traversable_terrain(int row, int col)
+int tile_is_traversable_terrain(int row, int col)
 {
 	return g_stage[row][col].terrain->traversable;
 }
 
-int is_occupied(int row, int col)
+int tile_is_occupied(int row, int col)
 {
 	return 0 != g_stage[row][col].occupant;
+}
+
+void occupy_tile(int row, int col, struct actor* a)
+{
+	g_stage[row][col].occupant = a;
+}
+
+void unoccupy_tile(int row, int col)
+{
+	g_stage[row][col].occupant = 0;
 }
 
 /*

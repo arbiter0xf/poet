@@ -36,8 +36,10 @@ struct tile {
 };
 
 void load_stage(enum stage_type s_type);
-int is_traversable_terrain(int row, int col);
-int is_occupied(int row, int col);
+int tile_is_traversable_terrain(int row, int col);
+int tile_is_occupied(int row, int col);
+void occupy_tile(int row, int col, struct actor* a);
+void unoccupy_tile(int row, int col);
 void set_stage_slice_around_player(void);
 void unload_stage(void);
 

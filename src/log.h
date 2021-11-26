@@ -12,6 +12,9 @@
 #define LOG_WARNING(new_log, ...) LOG_COMMON("[WARN] " , new_log, __VA_ARGS__)
 #define LOG_ERROR(new_log, ...) LOG_COMMON("[ERR ] " , new_log, __VA_ARGS__)
 
+#if LOGGING_DISABLED
+#define LOG_COMMON(priority, new_log, ...)
+#else
 #define LOG_COMMON(priority, new_log, ...)			\
 	bzero(g_log_buffer, LOG_STR_SIZE);			\
 	strcat(g_log_buffer, priority);				\
@@ -20,6 +23,7 @@
 	assert(g_log_handle);					\
 	fprintf(g_log_handle, g_log_buffer, __VA_ARGS__);	\
 	fflush(g_log_handle);
+#endif
 
 extern FILE* g_log_handle;
 extern char g_log_buffer[LOG_STR_SIZE];

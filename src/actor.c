@@ -67,13 +67,22 @@ int get_actor_col(struct actor* const a)
 void set_actor_row(struct actor* const a, int new_row)
 {
 	assert(0 != a);
-	a->row = new_row;
+
+	if (!tile_is_occupied(new_row, get_actor_col(a))) {
+		unoccupy_tile(get_actor_row(a), get_actor_col(a));
+		a->row = new_row;
+		occupy_tile(get_actor_row(a), get_actor_col(a), a);
+	}
 }
 
 void set_actor_col(struct actor* const a, int new_col)
 {
 	assert(0 != a);
-	a->col = new_col;
+	if (!tile_is_occupied(get_actor_row(a), new_col)) {
+		unoccupy_tile(get_actor_row(a), get_actor_col(a));
+		a->col = new_col;
+		occupy_tile(get_actor_row(a), get_actor_col(a), a);
+	}
 }
 
 int player_has_spawned()
