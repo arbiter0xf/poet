@@ -2,6 +2,7 @@
 
 #include "actor.h"
 #include "log.h"
+#include "util_poet.h"
 
 struct actor* g_all_actors[ALL_ACTORS_SIZE] = {0};
 int g_all_actors_player_index; // Initialized when player allocated

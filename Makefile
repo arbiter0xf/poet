@@ -41,4 +41,4 @@ test_slow:
 	./run_tests.sh
 
 clean:
-	rm $(OBJ) $(EXECUTABLE)
+	$(RM) $(OBJ) $(DEP) $(EXECUTABLE)

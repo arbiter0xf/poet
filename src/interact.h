@@ -5,7 +5,6 @@
 #include "draw.h"
 #include "item.h"
 #include "stage.h"
-#include "util.h"
 
 void interact_with_occupant_of(int row, int col, struct actor* const initiator);
 void get_picked(struct actor* const self, struct actor* const initiator);

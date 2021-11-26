@@ -1,7 +1,7 @@
 #include <ncurses.h>
 
 #include "user_input.h"
-#include "util.h"
+#include "util_poet.h"
 
 int is_direction_button(int* const pressed_key)
 {

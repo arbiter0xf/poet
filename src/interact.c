@@ -1,6 +1,7 @@
 #include "announce.h"
 #include "interact.h"
 #include "log.h"
+#include "util_poet.h"
 
 void interact_with_occupant_of(int row, int col, struct actor* const initiator)
 {

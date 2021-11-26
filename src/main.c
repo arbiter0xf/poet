@@ -8,11 +8,10 @@
 #include "draw.h"
 #include "interact.h"
 #include "item.h"
-#include "log.h"
 #include "stage.h"
 #include "update.h"
 #include "user_input.h"
-#include "util.h"
+#include "util_poet.h"
 
 #define ROW_DEBUG_ZERO 45
 #define COL_DEBUG_ZERO 5
@@ -35,68 +34,6 @@ g_row_debug_current++;
 #endif
 
 int g_row_debug_current = 0;
-
-void initialize_io(void)
-{
-	initscr();
-	noecho(); // Do not echo read chars
-	cbreak(); // Read input contiguously
-	keypad(stdscr, TRUE); // Read more keys, including arrow keys
-	curs_set(0);
-
-	initialize_logging();
-}
-
-void teardown_io(void)
-{
-	teardown_logging();
-	endwin();
-}
-
-void populate_structures()
-{
-	const char* op_names[] = {
-		"use",
-		"equip",
-		"drop",
-	};
-	void (*op_apply_functions[]) (struct item* const subject) = {
-		apply_operation_use,
-		apply_operation_equip,
-		apply_operation_drop,
-	};
-
-	const int available_names = sizeof(op_names) / sizeof(op_names[0]);
-	const int available_functions =
-		sizeof(op_apply_functions) / sizeof(op_apply_functions[0]);
-	const int available_operations = available_names;
-
-	assert(available_names == available_functions);
-
-	for (int i = 0; 1; i++) {
-		if (i >= ITEM_OPERATIONS_SIZE) {
-			break;
-		}
-
-		if (i >= available_operations) {
-			break;
-		}
-
-		g_item_operations[i] = malloc(sizeof(struct item_operation));
-		strcpy(g_item_operations[i]->name, op_names[i]);
-		g_item_operations[i]->apply = op_apply_functions[i];
-	}
-}
-
-void unpopulate_structures()
-{
-	for (int i = 0; i < ITEM_OPERATIONS_SIZE; i++) {
-		if (0 != g_item_operations[i]) {
-			free(g_item_operations[i]);
-			g_item_operations[i] = 0;
-		}
-	}
-}
 
 int main(void) {
 	int pressed_key = 0;
