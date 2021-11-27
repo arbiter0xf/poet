@@ -10,12 +10,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-    - name: configure
-      run: ./configure
-    - name: make
-      run: make
-    - name: make test_run
-      run: make test_run
-    - name: make distcheck
-      run: make distcheck
+      - uses: actions/checkout@v2
+      - name: deps - Install criterion
+        run: scripts/install_criterion.sh
+      - name: configure
+        run: ./configure
+      - name: make
+        run: make
+      - name: make test_run
+        run: make test_run
+      - name: make distcheck
+        run: make distcheck
