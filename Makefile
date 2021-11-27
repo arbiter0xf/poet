@@ -6,7 +6,6 @@ DEP := $(SRC:.c=.d)
 HEADERS := $(wildcard *.h) $(wildcard *.const)
 
 SRC_WITHOUT_MAIN := $(filter-out src/main.c,$(SRC))
-$(info SRC_WITHOUT_MAIN is: $(SRC_WITHOUT_MAIN))
 
 # Produce header dependency files to be included below
 CFLAGS := -MMD
