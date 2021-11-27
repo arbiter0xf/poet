@@ -38,7 +38,7 @@ test: $(SRC_TEST) $(SRC_WITHOUT_MAIN)
 	$(COMPILER_TEST) -DLOGGING_DISABLED=1 -Wall -o $(EXECUTABLE_TEST) $^ $(LDFLAGS_TEST)
 
 test_run: test
-	./$(EXECUTABLE_TEST)
+	LD_LIBRARY_PATH=/usr/lib64 ./$(EXECUTABLE_TEST)
 
 test_slow:
 	./run_tests.sh
