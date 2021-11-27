@@ -21,7 +21,7 @@ COMPILER_TEST := $(COMPILER)
 LDFLAGS := -lncurses
 LDFLAGS_TEST := $(LDFLAGS) -lcriterion
 
-.PHONY: clean run slow test test_run
+.PHONY: clean run slow test test_run distcheck
 
 $(EXECUTABLE): $(OBJ)
 	$(COMPILER) -Wall -o $@ $^ $(LDFLAGS)
@@ -42,6 +42,9 @@ test_run: test
 
 test_slow:
 	./run_tests.sh
+
+distcheck:
+	true
 
 clean:
 	$(RM) $(OBJ) $(DEP) $(EXECUTABLE)
