@@ -22,6 +22,7 @@
 enum stage_type {
 	STAGE_TYPE_HIDEOUT,
 	STAGE_TYPE_DUNGEON,
+	STAGE_TYPE_SEWER,
 };
 
 struct terrain {
@@ -42,6 +43,7 @@ void occupy_tile(int row, int col, struct actor* a);
 void unoccupy_tile(int row, int col);
 void set_stage_slice_around_player(void);
 void unload_stage(void);
+void dump_stage_to_file(void);
 
 extern struct terrain* g_all_terrains[ALL_TERRAINS_SIZE];
 extern struct tile g_stage_slice[ROW_DRAW_STAGE_LEN][COL_DRAW_STAGE_LEN];

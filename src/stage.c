@@ -14,18 +14,23 @@ static void add_tile_to_slice(
 		const int cursor_vertical,
 		const int cursor_horizontal);
 static void set_stage_name(char* new_stage_name);
-static int is_corner(int i, int k);
-static int is_horizontal_edge(int i, int k);
-static int is_vertical_edge(int i, int k);
+static int is_corner(int i, int k, int start_row, int end_row, int start_col, int end_col);
+static int is_horizontal_edge(int i, int start_row, int end_row);
+static int is_vertical_edge(int i, int start_col, int end_col);
 static void load_stage_hideout(void);
 static void load_stage_dungeon(void);
+static void load_stage_sewer(void);
 
 void load_stage(enum stage_type s_type)
 {
+	unload_stage();
+
 	if (STAGE_TYPE_HIDEOUT == s_type) {
 		load_stage_hideout();
-	} else if (STAGE_TYPE_DUNGEON) {
+	} else if (STAGE_TYPE_DUNGEON == s_type) {
 		load_stage_dungeon();
+	} else if (STAGE_TYPE_SEWER == s_type) {
+		load_stage_sewer();
 	}
 }
 
@@ -139,47 +144,47 @@ static void set_stage_name(char* new_stage_name)
 	strcpy(g_stage_name, new_stage_name);
 }
 
-static int is_corner(int i, int k)
+static int is_corner(int i, int k, int start_row, int end_row, int start_col, int end_col)
 {
-	if (0 == i && 0 == k) {
+	if (start_row == i && start_col == k) {
 		return 1;
 	}
 
-	if (STAGE_SIZE_VERTICAL - 1 == i && 0 == k) {
+	if (end_row == i && start_col == k) {
 		return 1;
 	}
 
-	if (0 == i && STAGE_SIZE_HORIZONTAL - 1 == k) {
+	if (start_row == i && end_col == k) {
 		return 1;
 	}
 
-	if (STAGE_SIZE_VERTICAL - 1 == i && STAGE_SIZE_HORIZONTAL - 1 == k) {
+	if (end_row == i && end_col == k) {
 		return 1;
 	}
 
 	return 0;
 }
 
-static int is_horizontal_edge(int i, int k)
+static int is_horizontal_edge(int i, int start_row, int end_row)
 {
-	if (0 == i) {
+	if (start_row == i) {
 		return 1;
 	}
 
-	if (STAGE_SIZE_VERTICAL - 1 == i) {
+	if (end_row == i) {
 		return 1;
 	}
 
 	return 0;
 }
 
-static int is_vertical_edge(int i, int k)
+static int is_vertical_edge(int k, int start_col, int end_col)
 {
-	if (0 == k) {
+	if (start_col == k) {
 		return 1;
 	}
 
-	if (STAGE_SIZE_HORIZONTAL - 1 == k) {
+	if (end_col == k) {
 		return 1;
 	}
 
@@ -193,13 +198,16 @@ void set_stage_room(int start_row, int start_col, int len_vertical, int len_hori
 	assert((start_row + len_vertical) <= STAGE_SIZE_VERTICAL);
 	assert((start_col + len_horizontal) <= STAGE_SIZE_HORIZONTAL);
 
-	for (int i = start_row; i < len_vertical; i++) {
-		for (int k = start_col; k < len_horizontal; k++) {
-			if (is_corner(i, k)) {
+	const int end_row = start_row + len_vertical - 1;
+	const int end_col = start_col + len_horizontal - 1;
+
+	for (int i = start_row; i <= end_row; i++) {
+		for (int k = start_col; k <= end_col; k++) {
+			if (is_corner(i, k, start_row, end_row, start_col, end_col)) {
 				g_stage[i][k].terrain = g_all_terrains[ALL_TERRAINS_COLUMN];
-			} else if (is_horizontal_edge(i, k)) {
+			} else if (is_horizontal_edge(i, start_row, end_row)) {
 				g_stage[i][k].terrain = g_all_terrains[ALL_TERRAINS_WALL_HORIZONTAL];
-			} else if (is_vertical_edge(i, k)) {
+			} else if (is_vertical_edge(k, start_col, end_col)) {
 				g_stage[i][k].terrain = g_all_terrains[ALL_TERRAINS_WALL_VERTICAL];
 			} else {
 				g_stage[i][k].terrain = g_all_terrains[ALL_TERRAINS_FLOOR];
@@ -248,6 +256,19 @@ static void load_stage_dungeon(void)
 	set_stage_name("Dungeon");
 }
 
+static void load_stage_sewer(void)
+{
+	const int len_vertical = 5;
+	const int len_horizontal = 5;
+
+	set_stage_room(0, 0, len_vertical, len_horizontal);
+	set_stage_room(0, 6, len_vertical, len_horizontal);
+
+	spawn_player(2, 2, get_all_actors());
+
+	set_stage_name("Sewer");
+}
+
 void unload_stage(void)
 {
 	despawn_all_actors();
@@ -270,4 +291,19 @@ void unload_stage(void)
 			g_stage_slice[i][k].occupant = 0;
 		}
 	}
+}
+
+void dump_stage_to_file(void)
+{
+	FILE* dumpfile = 0;
+	dumpfile = fopen("stage_dump.txt", "w");
+
+	for (int i = 0; i < STAGE_SIZE_VERTICAL; i++) {
+		for (int k = 0; k < STAGE_SIZE_HORIZONTAL; k++) {
+			fprintf(dumpfile, "%c", g_stage[i][k].terrain->icon);
+		}
+		fprintf(dumpfile, "\n");
+	}
+
+	fclose(dumpfile);
 }
