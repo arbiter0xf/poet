@@ -285,9 +285,6 @@ static void load_stage_dungeon(void)
 
 static void load_stage_sewer(void)
 {
-	const int end_vertical = 5;
-	const int end_horizontal = 5;
-
 	set_stage_rect(0, 0, 6, 6);
 	set_stage_rect(2, 6, 4, 14);
 	set_stage_rect(0, 14, 6, 20);
