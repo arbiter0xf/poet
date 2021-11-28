@@ -79,8 +79,7 @@ int main(void) {
 
 	initialize_io();
 	populate_structures();
-	// load_stage(STAGE_TYPE_HIDEOUT);
-	load_stage(STAGE_TYPE_SEWER);
+	load_stage(STAGE_TYPE_HIDEOUT);
 	dump_stage_to_file();
 
 	while (BUTTON_QUIT != pressed_key) {
