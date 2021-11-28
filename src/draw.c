@@ -41,12 +41,14 @@ static void undraw_tile(int row, int col)
 
 static void draw_tile(int row, int col)
 {
-	move(ROW_DRAW_STAGE_ZERO + row, COL_DRAW_STAGE_ZERO + col);
-	addch(g_stage_slice[row][col].terrain->icon);
+	struct tile* const current_tile = &(g_stage_slice[row][col]);
 
-	if (0 != g_stage_slice[row][col].occupant) {
+	move(ROW_DRAW_STAGE_ZERO + row, COL_DRAW_STAGE_ZERO + col);
+	addch(current_tile->terrain->icon);
+
+	if (0 != current_tile->occupant) {
 		move(ROW_DRAW_STAGE_ZERO + row, COL_DRAW_STAGE_ZERO + col);
-		addch(g_stage_slice[row][col].occupant->icon);
+		addch(current_tile->occupant->icon);
 	}
 }
 
