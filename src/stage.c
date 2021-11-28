@@ -17,15 +17,15 @@ static void set_stage_name(char* new_stage_name);
 static int is_corner(int i, int k);
 static int is_horizontal_edge(int i, int k);
 static int is_vertical_edge(int i, int k);
-static void set_stage_hideout(void);
-static void set_stage_dungeon(void);
+static void load_stage_hideout(void);
+static void load_stage_dungeon(void);
 
 void load_stage(enum stage_type s_type)
 {
 	if (STAGE_TYPE_HIDEOUT == s_type) {
-		set_stage_hideout();
+		load_stage_hideout();
 	} else if (STAGE_TYPE_DUNGEON) {
-		set_stage_dungeon();
+		load_stage_dungeon();
 	}
 }
 
@@ -186,10 +186,15 @@ static int is_vertical_edge(int i, int k)
 	return 0;
 }
 
-static void set_stage_hideout(void)
+void set_stage_room(int start_row, int start_col, int len_vertical, int len_horizontal)
 {
-	for (int i = 0; i < STAGE_SIZE_VERTICAL; i++) {
-		for (int k = 0; k < STAGE_SIZE_HORIZONTAL; k++) {
+	assert(start_row >= 0);
+	assert(start_col >= 0);
+	assert((start_row + len_vertical) <= STAGE_SIZE_VERTICAL);
+	assert((start_col + len_horizontal) <= STAGE_SIZE_HORIZONTAL);
+
+	for (int i = start_row; i < len_vertical; i++) {
+		for (int k = start_col; k < len_horizontal; k++) {
 			if (is_corner(i, k)) {
 				g_stage[i][k].terrain = g_all_terrains[ALL_TERRAINS_COLUMN];
 			} else if (is_horizontal_edge(i, k)) {
@@ -201,6 +206,14 @@ static void set_stage_hideout(void)
 			}
 		}
 	}
+}
+
+static void load_stage_hideout(void)
+{
+	const int hideout_len_vertical = STAGE_SIZE_VERTICAL;
+	const int hideout_len_horizontal = STAGE_SIZE_HORIZONTAL;
+
+	set_stage_room(0, 0, hideout_len_vertical, hideout_len_horizontal);
 
 	spawn_player(2, 2, get_all_actors());
 	spawn_actor(
@@ -223,21 +236,12 @@ static void set_stage_hideout(void)
 	set_stage_name("Hideout");
 }
 
-static void set_stage_dungeon()
+static void load_stage_dungeon(void)
 {
-	for (int i = 0; i < STAGE_SIZE_VERTICAL; i++) {
-		for (int k = 0; k < STAGE_SIZE_HORIZONTAL; k++) {
-			if (is_corner(i, k)) {
-				g_stage[i][k].terrain = g_all_terrains[ALL_TERRAINS_COLUMN];
-			} else if (is_horizontal_edge(i, k)) {
-				g_stage[i][k].terrain = g_all_terrains[ALL_TERRAINS_WALL_HORIZONTAL];
-			} else if (is_vertical_edge(i, k)) {
-				g_stage[i][k].terrain = g_all_terrains[ALL_TERRAINS_WALL_VERTICAL];
-			} else {
-				g_stage[i][k].terrain = g_all_terrains[ALL_TERRAINS_FLOOR];
-			}
-		}
-	}
+	const int dungeon_len_vertical = STAGE_SIZE_VERTICAL;
+	const int dungeon_len_horizontal = STAGE_SIZE_HORIZONTAL;
+
+	set_stage_room(0, 0, dungeon_len_vertical, dungeon_len_horizontal);
 
 	spawn_player(2, 2, get_all_actors());
 
