@@ -20,6 +20,7 @@ static int is_vertical_edge(int i, int start_col, int end_col);
 static void load_stage_hideout(void);
 static void load_stage_dungeon(void);
 static void load_stage_sewer(void);
+static void set_stage_rect(int start_row, int start_col, int len_vertical, int len_horizontal);
 
 void load_stage(enum stage_type s_type)
 {
@@ -191,15 +192,12 @@ static int is_vertical_edge(int k, int start_col, int end_col)
 	return 0;
 }
 
-void set_stage_room(int start_row, int start_col, int len_vertical, int len_horizontal)
+static void set_stage_rect(int start_row, int start_col, int end_row, int end_col)
 {
 	assert(start_row >= 0);
 	assert(start_col >= 0);
-	assert((start_row + len_vertical) <= STAGE_SIZE_VERTICAL);
-	assert((start_col + len_horizontal) <= STAGE_SIZE_HORIZONTAL);
-
-	const int end_row = start_row + len_vertical - 1;
-	const int end_col = start_col + len_horizontal - 1;
+	assert((start_row + end_row) < STAGE_SIZE_VERTICAL);
+	assert((start_col + end_col) < STAGE_SIZE_HORIZONTAL);
 
 	for (int i = start_row; i <= end_row; i++) {
 		for (int k = start_col; k <= end_col; k++) {
@@ -218,10 +216,10 @@ void set_stage_room(int start_row, int start_col, int len_vertical, int len_hori
 
 static void load_stage_hideout(void)
 {
-	const int hideout_len_vertical = STAGE_SIZE_VERTICAL;
-	const int hideout_len_horizontal = STAGE_SIZE_HORIZONTAL;
+	const int hideout_end_vertical = STAGE_SIZE_VERTICAL - 1;
+	const int hideout_end_horizontal = STAGE_SIZE_HORIZONTAL - 1;
 
-	set_stage_room(0, 0, hideout_len_vertical, hideout_len_horizontal);
+	set_stage_rect(0, 0, hideout_end_vertical, hideout_end_horizontal);
 
 	spawn_player(2, 2, get_all_actors());
 	spawn_actor(
@@ -246,10 +244,10 @@ static void load_stage_hideout(void)
 
 static void load_stage_dungeon(void)
 {
-	const int dungeon_len_vertical = STAGE_SIZE_VERTICAL;
-	const int dungeon_len_horizontal = STAGE_SIZE_HORIZONTAL;
+	const int dungeon_end_vertical = STAGE_SIZE_VERTICAL - 1;
+	const int dungeon_end_horizontal = STAGE_SIZE_HORIZONTAL - 1;
 
-	set_stage_room(0, 0, dungeon_len_vertical, dungeon_len_horizontal);
+	set_stage_rect(0, 0, dungeon_end_vertical, dungeon_end_horizontal);
 
 	spawn_player(2, 2, get_all_actors());
 
@@ -258,11 +256,11 @@ static void load_stage_dungeon(void)
 
 static void load_stage_sewer(void)
 {
-	const int len_vertical = 5;
-	const int len_horizontal = 5;
+	const int end_vertical = 5;
+	const int end_horizontal = 5;
 
-	set_stage_room(0, 0, len_vertical, len_horizontal);
-	set_stage_room(0, 6, len_vertical, len_horizontal);
+	set_stage_rect(0, 0, 4, 4);
+	set_stage_rect(0, 6, 10, 10);
 
 	spawn_player(2, 2, get_all_actors());
 
