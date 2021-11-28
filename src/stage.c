@@ -20,7 +20,7 @@ static int is_vertical_edge(int i, int start_col, int end_col);
 static void load_stage_hideout(void);
 static void load_stage_dungeon(void);
 static void load_stage_sewer(void);
-static void set_stage_rect(int start_row, int start_col, int len_vertical, int len_horizontal);
+static void set_stage_rect(int start_row, int start_col, int end_row, int end_col);
 static void set_stage_rect_tile(int row, int col, int start_row, int start_col, int end_row, int end_col);
 
 void load_stage(enum stage_type s_type)
