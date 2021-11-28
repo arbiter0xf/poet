@@ -79,10 +79,9 @@ int main(void) {
 
 	initialize_io();
 	populate_structures();
-	load_stage(STAGE_TYPE_HIDEOUT);
-#if 0
+	// load_stage(STAGE_TYPE_HIDEOUT);
+	load_stage(STAGE_TYPE_SEWER);
 	dump_stage_to_file();
-#endif
 
 	while (BUTTON_QUIT != pressed_key) {
 		draw(get_all_actors());

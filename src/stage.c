@@ -21,6 +21,7 @@ static void load_stage_hideout(void);
 static void load_stage_dungeon(void);
 static void load_stage_sewer(void);
 static void set_stage_rect(int start_row, int start_col, int len_vertical, int len_horizontal);
+static void set_stage_rect_tile(int row, int col, int start_row, int start_col, int end_row, int end_col);
 
 void load_stage(enum stage_type s_type)
 {
@@ -192,6 +193,15 @@ static int is_vertical_edge(int k, int start_col, int end_col)
 	return 0;
 }
 
+static int tile_is_wall_vertical(struct tile* const t)
+{
+	if (t->terrain == g_all_terrains[ALL_TERRAINS_WALL_VERTICAL]) {
+		return 1;
+	}
+
+	return 0;
+}
+
 static void set_stage_rect(int start_row, int start_col, int end_row, int end_col)
 {
 	assert(start_row >= 0);
@@ -201,17 +211,36 @@ static void set_stage_rect(int start_row, int start_col, int end_row, int end_co
 
 	for (int i = start_row; i <= end_row; i++) {
 		for (int k = start_col; k <= end_col; k++) {
-			if (is_corner(i, k, start_row, end_row, start_col, end_col)) {
-				g_stage[i][k].terrain = g_all_terrains[ALL_TERRAINS_COLUMN];
-			} else if (is_horizontal_edge(i, start_row, end_row)) {
-				g_stage[i][k].terrain = g_all_terrains[ALL_TERRAINS_WALL_HORIZONTAL];
-			} else if (is_vertical_edge(k, start_col, end_col)) {
-				g_stage[i][k].terrain = g_all_terrains[ALL_TERRAINS_WALL_VERTICAL];
-			} else {
-				g_stage[i][k].terrain = g_all_terrains[ALL_TERRAINS_FLOOR];
-			}
+			set_stage_rect_tile(i, k, start_row, start_col, end_row, end_col);
 		}
 	}
+}
+
+static void set_stage_rect_tile(int row, int col, int start_row, int start_col, int end_row, int end_col)
+{
+	struct tile* const t = &(g_stage[row][col]);
+
+	if (is_corner(row, col, start_row, end_row, start_col, end_col)) {
+		t->terrain = g_all_terrains[ALL_TERRAINS_COLUMN];
+		return;
+	}
+
+	if (is_horizontal_edge(row, start_row, end_row)) {
+		t->terrain = g_all_terrains[ALL_TERRAINS_WALL_HORIZONTAL];
+		return;
+	}
+
+	if (is_vertical_edge(col, start_col, end_col) && tile_is_wall_vertical(t)) {
+		t->terrain = g_all_terrains[ALL_TERRAINS_FLOOR];
+		return;
+	}
+
+	if (is_vertical_edge(col, start_col, end_col)) {
+		t->terrain = g_all_terrains[ALL_TERRAINS_WALL_VERTICAL];
+		return;
+	}
+
+	t->terrain = g_all_terrains[ALL_TERRAINS_FLOOR];
 }
 
 static void load_stage_hideout(void)
@@ -259,8 +288,9 @@ static void load_stage_sewer(void)
 	const int end_vertical = 5;
 	const int end_horizontal = 5;
 
-	set_stage_rect(0, 0, 4, 4);
-	set_stage_rect(0, 6, 10, 10);
+	set_stage_rect(0, 0, 6, 6);
+	set_stage_rect(2, 6, 4, 14);
+	set_stage_rect(0, 14, 6, 20);
 
 	spawn_player(2, 2, get_all_actors());
 
