@@ -3,6 +3,8 @@
 
 #include <string.h>
 
+#include "draw.h.const"
+
 #define STAGE_SIZE_HORIZONTAL 40
 #define STAGE_SIZE_VERTICAL STAGE_SIZE_HORIZONTAL
 
@@ -23,11 +25,12 @@ enum stage_type {
 	STAGE_TYPE_HIDEOUT,
 	STAGE_TYPE_DUNGEON,
 	STAGE_TYPE_SEWER,
+	STAGE_TYPE_TEST1,
 };
 
 struct terrain {
 	char icon;
-	const char name[32];
+	char name[32];
 	char traversable;
 };
 
@@ -44,6 +47,12 @@ void unoccupy_tile(int row, int col);
 void set_stage_slice_around_player(void);
 void unload_stage(void);
 void dump_stage_to_file(void);
+
+int tile_is_wall_vertical(struct tile* const t);
+int tile_is_wall_horizontal(struct tile* const t);
+int tile_is_floor(struct tile* const t);
+int tile_is_column(struct tile* const t);
+int tile_is_void(struct tile* const t);
 
 extern struct terrain* g_all_terrains[ALL_TERRAINS_SIZE];
 extern struct tile g_stage_slice[ROW_DRAW_STAGE_LEN][COL_DRAW_STAGE_LEN];

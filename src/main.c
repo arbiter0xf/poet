@@ -39,42 +39,6 @@ int main(void) {
 	int pressed_key = 0;
 	time_t t;
 
-	struct terrain floor = {
-		.icon = '.',
-		.name = "floor",
-		.traversable = 1,
-	};
-
-	struct terrain wall_vertical = {
-		.icon = '|',
-		.name = "wall_vertical",
-		.traversable = 0,
-	};
-
-	struct terrain wall_horizontal = {
-		.icon = '-',
-		.name = "wall_horizontal",
-		.traversable = 0,
-	};
-
-	struct terrain column = {
-		.icon = '+',
-		.name = "column",
-		.traversable = 0,
-	};
-
-	struct terrain terrain_void = {
-		.icon = ' ',
-		.name = "void",
-		.traversable = 0,
-	};
-
-	g_all_terrains[ALL_TERRAINS_FLOOR]		= &floor;
-	g_all_terrains[ALL_TERRAINS_WALL_VERTICAL]	= &wall_vertical;
-	g_all_terrains[ALL_TERRAINS_WALL_HORIZONTAL]	= &wall_horizontal;
-	g_all_terrains[ALL_TERRAINS_COLUMN]		= &column;
-	g_all_terrains[ALL_TERRAINS_VOID]		= &terrain_void;
-
 	srandom((unsigned) time(&t));
 
 	initialize_io();

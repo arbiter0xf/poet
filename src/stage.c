@@ -20,6 +20,7 @@ static int is_vertical_edge(int i, int start_col, int end_col);
 static void load_stage_hideout(void);
 static void load_stage_dungeon(void);
 static void load_stage_sewer(void);
+static void load_stage_test1(void);
 static void set_stage_rect(int start_row, int start_col, int end_row, int end_col);
 static void set_stage_rect_tile(int row, int col, int start_row, int start_col, int end_row, int end_col);
 
@@ -33,6 +34,8 @@ void load_stage(enum stage_type s_type)
 		load_stage_dungeon();
 	} else if (STAGE_TYPE_SEWER == s_type) {
 		load_stage_sewer();
+	} else if (STAGE_TYPE_TEST1 == s_type) {
+		load_stage_test1();
 	}
 }
 
@@ -193,9 +196,45 @@ static int is_vertical_edge(int k, int start_col, int end_col)
 	return 0;
 }
 
-static int tile_is_wall_vertical(struct tile* const t)
+int tile_is_wall_vertical(struct tile* const t)
 {
 	if (t->terrain == g_all_terrains[ALL_TERRAINS_WALL_VERTICAL]) {
+		return 1;
+	}
+
+	return 0;
+}
+
+int tile_is_wall_horizontal(struct tile* const t)
+{
+	if (t->terrain == g_all_terrains[ALL_TERRAINS_WALL_HORIZONTAL]) {
+		return 1;
+	}
+
+	return 0;
+}
+
+int tile_is_floor(struct tile* const t)
+{
+	if (t->terrain == g_all_terrains[ALL_TERRAINS_FLOOR]) {
+		return 1;
+	}
+
+	return 0;
+}
+
+int tile_is_column(struct tile* const t)
+{
+	if (t->terrain == g_all_terrains[ALL_TERRAINS_COLUMN]) {
+		return 1;
+	}
+
+	return 0;
+}
+
+int tile_is_void(struct tile* const t)
+{
+	if (t->terrain == g_all_terrains[ALL_TERRAINS_VOID]) {
 		return 1;
 	}
 
@@ -292,6 +331,15 @@ static void load_stage_sewer(void)
 	spawn_player(2, 2, get_all_actors());
 
 	set_stage_name("Sewer");
+}
+
+static void load_stage_test1(void)
+{
+	set_stage_rect(2, 2, 8, 8);
+
+	spawn_player(3, 3, get_all_actors());
+
+	set_stage_name("Test 1");
 }
 
 void unload_stage(void)

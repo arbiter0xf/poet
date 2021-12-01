@@ -79,6 +79,8 @@ void teardown_io(void)
 
 void populate_structures(void)
 {
+	int index = -1;
+
 	const char* op_names[] = {
 		"use",
 		"equip",
@@ -110,6 +112,36 @@ void populate_structures(void)
 		strcpy(g_item_operations[i]->name, op_names[i]);
 		g_item_operations[i]->apply = op_apply_functions[i];
 	}
+
+	index = ALL_TERRAINS_FLOOR;
+	g_all_terrains[index]			= (struct terrain*) malloc(sizeof(struct terrain));
+	g_all_terrains[index]->icon		= '.';
+	g_all_terrains[index]->traversable	= 1;
+	strcpy(g_all_terrains[index]->name,	"floor");
+
+	index = ALL_TERRAINS_WALL_VERTICAL;
+	g_all_terrains[index]			= (struct terrain*) malloc(sizeof(struct terrain));
+	g_all_terrains[index]->icon		= '|';
+	g_all_terrains[index]->traversable	= 0;
+	strcpy(g_all_terrains[index]->name,	"wall_vertical");
+
+	index = ALL_TERRAINS_WALL_HORIZONTAL;
+	g_all_terrains[index]			= (struct terrain*) malloc(sizeof(struct terrain));
+	g_all_terrains[index]->icon		= '-';
+	g_all_terrains[index]->traversable	= 0;
+	strcpy(g_all_terrains[index]->name,	"wall_horizontal");
+
+	index = ALL_TERRAINS_COLUMN;
+	g_all_terrains[index]			= (struct terrain*) malloc(sizeof(struct terrain));
+	g_all_terrains[index]->icon		= '+';
+	g_all_terrains[index]->traversable	= 0;
+	strcpy(g_all_terrains[index]->name,	"column");
+
+	index = ALL_TERRAINS_VOID;
+	g_all_terrains[index]			= (struct terrain*) malloc(sizeof(struct terrain));
+	g_all_terrains[index]->icon		= ' ';
+	g_all_terrains[index]->traversable	= 0;
+	strcpy(g_all_terrains[index]->name,	"void");
 }
 
 void unpopulate_structures(void)
@@ -118,6 +150,13 @@ void unpopulate_structures(void)
 		if (0 != g_item_operations[i]) {
 			free(g_item_operations[i]);
 			g_item_operations[i] = 0;
+		}
+	}
+
+	for (int i = 0; i < ALL_TERRAINS_SIZE; i++) {
+		if (0 != g_all_terrains[i]) {
+			free(g_all_terrains[i]);
+			g_all_terrains[i] = 0;
 		}
 	}
 }
