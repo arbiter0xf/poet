@@ -42,7 +42,7 @@ char* get_actor_name(struct actor* const a)
 	return a->name;
 }
 
-int get_actor_hitpoints(struct actor* const a)
+int actor_get_hitpoints(struct actor* const a)
 {
 	assert(0 != a);
 	return a->combat.hitpoints;
@@ -76,6 +76,18 @@ int get_actor_is_hostile(struct actor* const a)
 	return a->combat.is_hostile;
 }
 
+int actor_get_damage_unarmed(struct actor* const a)
+{
+	assert(0 != a);
+	return a->combat.damage_unarmed;
+}
+
+int actor_get_damage_armed(struct actor* const a)
+{
+	assert(0 != a);
+	return a->combat.damage_armed;
+}
+
 void set_actor_row(struct actor* const a, int new_row)
 {
 	assert(0 != a);
@@ -97,6 +109,33 @@ void set_actor_col(struct actor* const a, int new_col)
 	}
 }
 
+void actor_set_base_damage_unarmed(struct actor* const a, int base_damage)
+{
+	assert(0 != a);
+	a->combat.base_damage_unarmed = base_damage;
+}
+
+void actor_set_base_damage_armed(struct actor* const a, int base_damage)
+{
+	assert(0 != a);
+	a->combat.base_damage_armed = base_damage;
+}
+
+int actor_is_armed(struct actor* const a)
+{
+	int both_hands_empty;
+	struct item** const equipment = get_actor_equipment(a);
+
+	both_hands_empty =
+		0 == equipment[EQUIPMENT_SLOT_RIGHT_HAND] &&
+		0 == equipment[EQUIPMENT_SLOT_LEFT_HAND];
+	if (both_hands_empty) {
+		return 0;
+	}
+
+	return 1;
+}
+
 int player_has_spawned()
 {
 	return 0 != g_all_actors[g_all_actors_player_index];
@@ -106,6 +145,36 @@ void (*get_player_op_equip(void)) (struct item* const item_to_equip)
 {
 	struct actor* const player = get_player();
 	return player->op_equip;
+}
+
+void actor_calculate_damage(struct actor* const a)
+{
+	a->combat.damage_unarmed = a->combat.base_damage_unarmed;
+	a->combat.damage_armed = a->combat.base_damage_armed;
+}
+
+int actor_reduce_damage(struct actor* const a, unsigned int damage)
+{
+	return damage;
+}
+
+void actor_take_damage(struct actor* const a, unsigned int damage)
+{
+	struct actor* const p = get_player();
+
+	a->combat.hitpoints = a->combat.hitpoints - damage;
+	if (a->combat.hitpoints <= 0) {
+		strcpy(g_new_announcement, a->name);
+		strcat(g_new_announcement, " was vanquished");
+		announce(g_new_announcement);
+
+		/* TODO drop inventory */
+		a->op_despawn(a);
+
+		if (a == p) {
+			game_over();
+		}
+	}
 }
 
 void spawn_item_consumable(struct item ** const all_items, int first_free)
@@ -179,11 +248,21 @@ void despawn_actor(struct actor* const self)
 	free(self);
 }
 
+void despawn_actor_player(struct actor* const self)
+{
+	int row = get_actor_row(self);
+	int col = get_actor_col(self);
+
+	g_stage[row][col].occupant = 0;
+	g_all_actors[self->all_actors_index] = 0;
+	free(self);
+}
+
 void despawn_all_actors(void)
 {
 	for (int i = 0; i < ALL_ACTORS_SIZE; i++) {
 		if (0 != g_all_actors[i]) {
-			despawn_actor(g_all_actors[i]);
+			g_all_actors[i]->op_despawn(g_all_actors[i]);
 		}
 	}
 }
@@ -275,16 +354,23 @@ struct actor* spawn_actor(
 	}
 
 	strcpy(all_actors[f]->name, name);
-	all_actors[f]->row			= row;
-	all_actors[f]->col			= col;
-	all_actors[f]->icon			= icon;
-	all_actors[f]->all_actors_index 	= f;
-	all_actors[f]->op_equip			= 0; /* Only valid for player */
-	all_actors[f]->op_on_interact		= on_interact;
-	all_actors[f]->op_despawn		= despawn;
-	all_actors[f]->combat.hitpoints_max	= hitpoints_max;
-	all_actors[f]->combat.hitpoints		= all_actors[f]->combat.hitpoints_max;
-	all_actors[f]->combat.is_hostile	= is_hostile;
+	all_actors[f]->row				= row;
+	all_actors[f]->col				= col;
+	all_actors[f]->icon				= icon;
+	all_actors[f]->all_actors_index 		= f;
+	all_actors[f]->op_equip				= 0; /* Only valid for player */
+	all_actors[f]->op_on_interact			= on_interact;
+	all_actors[f]->op_despawn			= despawn;
+	all_actors[f]->combat.hitpoints_max		= hitpoints_max;
+	all_actors[f]->combat.hitpoints			= all_actors[f]->combat.hitpoints_max;
+	all_actors[f]->combat.is_hostile		= is_hostile;
+	all_actors[f]->combat.damage_unarmed		= 0;
+	all_actors[f]->combat.damage_armed		= 0;
+	all_actors[f]->combat.base_damage_unarmed	= 0;
+	all_actors[f]->combat.base_damage_armed		= 0;
+	all_actors[f]->attribute.dexterity		= 0;
+	all_actors[f]->attribute.intelligence		= 0;
+	all_actors[f]->attribute.strength		= 0;
 
 	g_stage[row][col].occupant = all_actors[f];
 
@@ -323,21 +409,29 @@ void spawn_player(
 		all_actors[f]->equipment[i] = 0;
 	}
 	strcpy(all_actors[f]->name, "wizard");
-	all_actors[f]->row		= row;
-	all_actors[f]->col		= col;
-	all_actors[f]->icon		= ICON_PLAYER;
-	all_actors[f]->all_actors_index = f;
-	all_actors[f]->op_equip		= player_equip_item;
-	all_actors[f]->op_on_interact	= do_combat;
-#if 0
-	all_actors[f]->despawn		= despawn_player;
-#endif
-	all_actors[f]->combat.hitpoints_max	= 100;
-	all_actors[f]->combat.hitpoints		= all_actors[f]->combat.hitpoints_max;
-	all_actors[f]->combat.is_hostile	= 1;
+	all_actors[f]->row				= row;
+	all_actors[f]->col				= col;
+	all_actors[f]->icon				= ICON_PLAYER;
+	all_actors[f]->all_actors_index 		= f;
+	all_actors[f]->op_equip				= player_equip_item;
+	all_actors[f]->op_on_interact			= do_combat;
+	all_actors[f]->op_despawn			= despawn_actor_player;
+	all_actors[f]->combat.hitpoints_max		= 100;
+	all_actors[f]->combat.hitpoints			= all_actors[f]->combat.hitpoints_max;
+	all_actors[f]->combat.is_hostile		= 1;
+	all_actors[f]->combat.damage_unarmed		= 0;
+	all_actors[f]->combat.damage_armed		= 0;
+	all_actors[f]->combat.base_damage_unarmed	= 0;
+	all_actors[f]->combat.base_damage_armed		= 0;
+	all_actors[f]->attribute.dexterity		= 0;
+	all_actors[f]->attribute.intelligence		= 0;
+	all_actors[f]->attribute.strength		= 0;
 
 	g_stage[row][col].occupant = all_actors[f];
 	g_all_actors_player_index = f;
+
+	actor_set_base_damage_unarmed(all_actors[f], 5);
+	actor_calculate_damage(all_actors[f]);
 
 	LOG_INFO("Spawn %s at (%d %d)\n", all_actors[f]->name, row, col);
 }

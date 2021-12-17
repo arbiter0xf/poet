@@ -87,7 +87,28 @@ void transport_to_stage(struct actor* const self, struct actor* const initiator)
 	load_stage(STAGE_TYPE_DUNGEON);
 }
 
-void do_combat(struct actor* const self, struct actor* const initiator)
+void do_combat(struct actor* const defender, struct actor* const attacker)
 {
-	LOG_DEBUG("%s\n", "do_combat()");
+	char damage_num[32];
+	unsigned int damage_attacker;
+	unsigned int damage_attacker_reduced;
+
+	if (actor_is_armed(attacker)) {
+		damage_attacker = actor_get_damage_armed(attacker);
+	} else {
+		damage_attacker = actor_get_damage_unarmed(attacker);
+	}
+	damage_attacker_reduced = actor_reduce_damage(defender, damage_attacker);
+
+	snprintf(damage_num, 32, "%d", damage_attacker_reduced);
+
+	strcpy(g_new_announcement, attacker->name);
+	strcat(g_new_announcement, " attacks ");
+	strcat(g_new_announcement, defender->name);
+	strcat(g_new_announcement, " and does ");
+	strcat(g_new_announcement, damage_num);
+	strcat(g_new_announcement, " damage");
+	announce(g_new_announcement);
+
+	actor_take_damage(defender, damage_attacker_reduced);
 }

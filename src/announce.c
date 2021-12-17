@@ -5,6 +5,7 @@
 
 char g_new_announcement[ANNOUNCEMENT_SIZE] = {0};
 
+#ifndef NOANNOUNCE
 void announce(const char* new_announcement)
 {
 	// TODO announcement history viewing
@@ -29,3 +30,9 @@ void announce(const char* new_announcement)
 		printw("%s", announcements_shortlist[i]);
 	}
 }
+#else
+void announce(const char* new_announcement)
+{
+	(void) new_announcement;
+}
+#endif

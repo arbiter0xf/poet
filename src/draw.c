@@ -117,7 +117,7 @@ void draw_hud_status(void)
 	move(ROW_DRAW_HUD_ZERO + 3, COL_DRAW_HUD_ZERO);
 	printw("Coordinates: (%d, %d)", get_actor_row(player), get_actor_col(player));
 	move(ROW_DRAW_HUD_ZERO + 4, COL_DRAW_HUD_ZERO);
-	printw("Hitpoints: %d", get_actor_hitpoints(player));
+	printw("Hitpoints: %d", actor_get_hitpoints(player));
 }
 
 void draw_hud_equipment(void)

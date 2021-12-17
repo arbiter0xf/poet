@@ -160,3 +160,9 @@ void unpopulate_structures(void)
 		}
 	}
 }
+
+void game_over(void)
+{
+	strcat(g_new_announcement, "Game Over");
+	announce(g_new_announcement);
+}

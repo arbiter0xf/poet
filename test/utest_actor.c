@@ -79,3 +79,38 @@ Test(actor, hostile_actor_get_coordinates)
 
 	a->op_despawn(a);
 }
+
+Test(actor, combat_with_damage_reduces_hitpoints)
+{
+	struct actor* a;
+	struct actor* p;
+
+	spawn_player(2, 2, get_all_actors());
+	p = get_player();
+	a = spawn_actor(
+			"orc",
+			5, 8,
+			ICON_ORC,
+			despawn_actor,
+			do_combat,
+			20,
+			1);
+
+	actor_set_base_damage_unarmed(a, 3);
+	actor_calculate_damage(a);
+	actor_set_base_damage_unarmed(p, 5);
+	actor_calculate_damage(p);
+
+	cr_expect(20 == actor_get_hitpoints(a));
+	cr_expect(100 == actor_get_hitpoints(p));
+
+	do_combat(a, p);
+
+	cr_expect(15 == actor_get_hitpoints(a));
+	cr_expect(100 == actor_get_hitpoints(p));
+
+	do_combat(p, a);
+
+	cr_expect(15 == actor_get_hitpoints(a));
+	cr_expect(97 == actor_get_hitpoints(p));
+}

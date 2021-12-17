@@ -314,12 +314,24 @@ static void load_stage_hideout(void)
 
 static void load_stage_dungeon(void)
 {
+	struct actor* a;
 	const int dungeon_end_vertical = STAGE_SIZE_VERTICAL - 1;
 	const int dungeon_end_horizontal = STAGE_SIZE_HORIZONTAL - 1;
 
 	set_stage_rect(0, 0, dungeon_end_vertical, dungeon_end_horizontal);
 
 	spawn_player(2, 2, get_all_actors());
+
+	a = spawn_actor(
+			"skeleton",
+			5, 8,
+			ICON_SKELETON,
+			despawn_actor,
+			do_combat,
+			25,
+			1);
+	actor_set_base_damage_unarmed(a, 3);
+	actor_calculate_damage(a);
 
 	set_stage_name("Dungeon");
 }

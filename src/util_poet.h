@@ -12,5 +12,6 @@ void initialize_io(void);
 void teardown_io(void);
 void populate_structures(void);
 void unpopulate_structures(void);
+void game_over(void);
 
 #endif

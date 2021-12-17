@@ -10,5 +10,6 @@
 #define ICON_MERCHANT 'e'
 #define ICON_ORC 'o'
 #define ICON_PORTAL 'p'
+#define ICON_SKELETON 's'
 
 #endif
