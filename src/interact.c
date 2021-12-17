@@ -86,3 +86,8 @@ void transport_to_stage(struct actor* const self, struct actor* const initiator)
 	unload_stage();
 	load_stage(STAGE_TYPE_DUNGEON);
 }
+
+void do_combat(struct actor* const self, struct actor* const initiator)
+{
+	LOG_DEBUG("%s\n", "do_combat()");
+}

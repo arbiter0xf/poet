@@ -9,11 +9,6 @@
 #define ACTOR_INVENTORY_SIZE 64
 #define ACTOR_EQUIPMENT_SIZE 6
 
-#define ICON_PLAYER '@'
-#define ICON_ITEM_DROP ';'
-#define ICON_MERCHANT 'e'
-#define ICON_PORTAL 'p'
-
 enum equipment_slot {
 	EQUIPMENT_SLOT_NONE,
 	EQUIPMENT_SLOT_HEAD,
@@ -32,6 +27,7 @@ enum spawn_item_type {
 struct stats_combat {
 	int hitpoints;
 	int hitpoints_max;
+	int is_hostile;
 };
 
 struct actor {
@@ -50,6 +46,7 @@ struct actor {
 };
 
 extern struct actor* g_all_actors[ALL_ACTORS_SIZE];
+extern struct actor* g_hostile_actors[ALL_ACTORS_SIZE];
 extern int g_all_actors_player_index;
 
 struct actor*	get_player(void);
@@ -59,6 +56,7 @@ struct item**	get_actor_equipment(struct actor* const a);
 struct item*	get_actor_item(struct actor* const a, int index);
 int		get_actor_row(struct actor* const a);
 int		get_actor_col(struct actor* const a);
+int		get_actor_is_hostile(struct actor* const a);
 char*		get_actor_name(struct actor* const a);
 int		get_actor_hitpoints(struct actor* const a);
 void		(*get_player_op_equip(void)) (struct item* const item_to_equip);
@@ -86,14 +84,15 @@ void spawn_item_drop(
 		struct item ** const all_items,
 		const int quality,
 		enum spawn_item_type type);
-void spawn_actor(
+struct actor* spawn_actor(
 		const char* name,
 		const int row,
 		const int col,
 		const char icon,
 		void (*despawn) (struct actor* const self),
 		void (*on_interact) (struct actor* const self, struct actor* const other),
-		const int hitpoints_max);
+		const int hitpoints_max,
+		const int is_hostile);
 void spawn_player(
 		const int row,
 		const int col,

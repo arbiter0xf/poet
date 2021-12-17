@@ -8,6 +8,7 @@
 #define ICON_PLAYER '@'
 #define ICON_ITEM_DROP ';'
 #define ICON_MERCHANT 'e'
+#define ICON_ORC 'o'
 #define ICON_PORTAL 'p'
 
 #endif

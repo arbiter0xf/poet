@@ -5,6 +5,7 @@
 #include "util_poet.h"
 
 struct actor* g_all_actors[ALL_ACTORS_SIZE] = {0};
+struct actor* g_hostile_actors[ALL_ACTORS_SIZE] = {0};
 int g_all_actors_player_index; // Initialized when player allocated
 
 struct actor* get_player(void)
@@ -52,6 +53,11 @@ struct actor** get_all_actors(void)
 	return g_all_actors;
 }
 
+struct actor** get_all_hostile_actors(void)
+{
+	return g_hostile_actors;
+}
+
 int get_actor_row(struct actor* const a)
 {
 	assert(0 != a);
@@ -62,6 +68,12 @@ int get_actor_col(struct actor* const a)
 {
 	assert(0 != a);
 	return a->col;
+}
+
+int get_actor_is_hostile(struct actor* const a)
+{
+	assert(0 != a);
+	return a->combat.is_hostile;
 }
 
 void set_actor_row(struct actor* const a, int new_row)
@@ -229,17 +241,20 @@ void spawn_item_drop(
 	LOG_INFO("Spawn %s at (%d %d)\n", all_actors[f]->name, row, col);
 }
 
-void spawn_actor(
+struct actor* spawn_actor(
 		const char* name,
 		const int row,
 		const int col,
 		const char icon,
 		void (*despawn) (struct actor* const self),
 		void (*on_interact) (struct actor* const self, struct actor* const other),
-		const int hitpoints_max)
+		const int hitpoints_max,
+		const int is_hostile)
 {
 	int f = -1;
+	int hf = -1;
 	struct actor** const all_actors = get_all_actors();
+	struct actor** const hostile_actors = get_all_hostile_actors();
 
 	f = get_first_free_actor_slot(all_actors);
 	if (-1 == f) {
@@ -247,7 +262,7 @@ void spawn_actor(
 		strcat(g_new_announcement, name);
 		strcat(g_new_announcement, ", no free actor slots.");
 		announce(g_new_announcement);
-		return;
+		return 0;
 	}
 
 	all_actors[f] = malloc(sizeof(struct actor));
@@ -269,10 +284,19 @@ void spawn_actor(
 	all_actors[f]->op_despawn		= despawn;
 	all_actors[f]->combat.hitpoints_max	= hitpoints_max;
 	all_actors[f]->combat.hitpoints		= all_actors[f]->combat.hitpoints_max;
+	all_actors[f]->combat.is_hostile	= is_hostile;
 
 	g_stage[row][col].occupant = all_actors[f];
 
+	if (is_hostile) {
+		hf = get_first_free_actor_slot(hostile_actors);
+		assert(-1 != hf);
+		hostile_actors[hf] = all_actors[f];
+	}
+
 	LOG_INFO("Spawn %s at (%d %d)\n", all_actors[f]->name, row, col);
+
+	return all_actors[f];
 }
 
 void spawn_player(
@@ -304,12 +328,13 @@ void spawn_player(
 	all_actors[f]->icon		= ICON_PLAYER;
 	all_actors[f]->all_actors_index = f;
 	all_actors[f]->op_equip		= player_equip_item;
-	all_actors[f]->op_on_interact	= greet;
+	all_actors[f]->op_on_interact	= do_combat;
 #if 0
 	all_actors[f]->despawn		= despawn_player;
 #endif
 	all_actors[f]->combat.hitpoints_max	= 100;
 	all_actors[f]->combat.hitpoints		= all_actors[f]->combat.hitpoints_max;
+	all_actors[f]->combat.is_hostile	= 1;
 
 	g_stage[row][col].occupant = all_actors[f];
 	g_all_actors_player_index = f;

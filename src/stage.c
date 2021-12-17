@@ -290,20 +290,22 @@ static void load_stage_hideout(void)
 	set_stage_rect(0, 0, hideout_end_vertical, hideout_end_horizontal);
 
 	spawn_player(2, 2, get_all_actors());
-	spawn_actor(
+	(void) spawn_actor(
 			"merchant",
 			5, 8,
 			ICON_MERCHANT,
 			despawn_actor,
 			initiate_trade,
-			100);
-	spawn_actor(
+			100,
+			0);
+	(void) spawn_actor(
 			"portal",
 			5, 14,
 			ICON_PORTAL,
 			despawn_actor,
 			transport_to_stage,
-			100);
+			100,
+			0);
 	spawn_item_drop(4, 4, get_all_actors(), get_all_items(), 2, SPAWN_ITEM_TYPE_CONSUMABLE);
 	spawn_item_drop(5, 5, get_all_actors(), get_all_items(), 2, SPAWN_ITEM_TYPE_EQUIPMENT);
 

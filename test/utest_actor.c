@@ -1,6 +1,7 @@
 #include <criterion/criterion.h>
 #include "../src/actor.h"
 #include "../src/util_poet.h"
+#include "../src/interact.h"
 
 #if 0
 void setup(void) {
@@ -57,4 +58,24 @@ Test(actor, player_coordinate_change_occupies_tile)
 	set_actor_row(get_player(), 4);
 	set_actor_col(get_player(), 4);
 	cr_expect(1 == tile_is_occupied(4, 4));
+}
+
+Test(actor, hostile_actor_get_coordinates)
+{
+	struct actor* a;
+
+	a = spawn_actor(
+			"orc",
+			5, 8,
+			ICON_ORC,
+			despawn_actor,
+			do_combat,
+			20,
+			1);
+
+	cr_expect(1 == get_actor_is_hostile(a));
+	cr_expect(5 == get_actor_row(a));
+	cr_expect(8 == get_actor_col(a));
+
+	a->op_despawn(a);
 }
