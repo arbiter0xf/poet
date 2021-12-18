@@ -240,11 +240,18 @@ int spawn_item(
 
 void despawn_actor(struct actor* const self)
 {
+	struct actor** hostile_actors;
 	int row = get_actor_row(self);
 	int col = get_actor_col(self);
 
 	g_stage[row][col].occupant = 0;
 	g_all_actors[self->all_actors_index] = 0;
+
+	if (self->combat.is_hostile) {
+		hostile_actors = get_all_hostile_actors();
+		hostile_actors[self->all_hostile_actors_index] = 0;
+	}
+
 	free(self);
 }
 
@@ -345,6 +352,11 @@ struct actor* spawn_actor(
 	}
 
 	all_actors[f] = malloc(sizeof(struct actor));
+	if (is_hostile) {
+		hf = get_first_free_actor_slot(hostile_actors);
+		assert(-1 != hf);
+		hostile_actors[hf] = all_actors[f];
+	}
 
 	for (int i = 0; i < ACTOR_INVENTORY_SIZE; i++) {
 		all_actors[f]->inventory[i] = 0;
@@ -358,6 +370,7 @@ struct actor* spawn_actor(
 	all_actors[f]->col				= col;
 	all_actors[f]->icon				= icon;
 	all_actors[f]->all_actors_index 		= f;
+	all_actors[f]->all_hostile_actors_index 	= hf;
 	all_actors[f]->op_equip				= 0; /* Only valid for player */
 	all_actors[f]->op_on_interact			= on_interact;
 	all_actors[f]->op_despawn			= despawn;
@@ -373,12 +386,6 @@ struct actor* spawn_actor(
 	all_actors[f]->attribute.strength		= 0;
 
 	g_stage[row][col].occupant = all_actors[f];
-
-	if (is_hostile) {
-		hf = get_first_free_actor_slot(hostile_actors);
-		assert(-1 != hf);
-		hostile_actors[hf] = all_actors[f];
-	}
 
 	LOG_INFO("Spawn %s at (%d %d)\n", all_actors[f]->name, row, col);
 

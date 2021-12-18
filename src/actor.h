@@ -46,6 +46,7 @@ struct actor {
 	char icon;
 	char name[32];
 	int all_actors_index;
+	int all_hostile_actors_index;
 	struct item* inventory[ACTOR_INVENTORY_SIZE];
 	struct item* equipment[ACTOR_EQUIPMENT_SIZE];
 	struct stats_combat combat;
