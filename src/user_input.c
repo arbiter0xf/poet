@@ -58,6 +58,14 @@ int is_hud_toggle_button(int* const pressed_key) {
 	return 0;
 }
 
+int is_wait_button(int* const pressed_key) {
+	if ('w' == *pressed_key) {
+		return 1;
+	}
+
+	return 0;
+}
+
 enum cursor_movement key_to_cursor_movement(int* const pressed_key)
 {
 	if (KEY_UP == *pressed_key)	{ return CURSOR_UP; }
@@ -81,6 +89,7 @@ enum position_update key_to_position_update(int* const pressed_key)
 	if (KEY_DOWN == *pressed_key)	{ return POSITION_UPDATE_DOWN; }
 	if (KEY_LEFT == *pressed_key)	{ return POSITION_UPDATE_LEFT; }
 	if (KEY_RIGHT == *pressed_key)	{ return POSITION_UPDATE_RIGHT; }
+	if ('w' == *pressed_key)	{ return POSITION_UPDATE_WAIT; }
 
 	return POSITION_UPDATE_NONE;
 }

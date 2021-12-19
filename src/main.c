@@ -16,8 +16,6 @@
 #define ROW_DEBUG_ZERO 45
 #define COL_DEBUG_ZERO 5
 
-#define BUTTON_QUIT 'q'
-
 #define DEBUG_MESSAGE_SIZE 128
 
 #define DEBUG_PRINT_ENABLE 0

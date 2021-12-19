@@ -455,3 +455,15 @@ void player_equip_item(struct item* const item_to_equip)
 	strcat(g_new_announcement, player->equipment[slot]->name);
 	announce(g_new_announcement);
 }
+
+struct actor* spawn_actor_skeleton(int row, int col)
+{
+	return spawn_actor(
+			"skeleton",
+			row, col,
+			ICON_SKELETON,
+			despawn_actor,
+			do_combat,
+			25,
+			1);
+}

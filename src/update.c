@@ -4,6 +4,8 @@
 #include "item.h"
 #include "log.h"
 #include "update.h"
+#include "user_input.h"
+#include "util_poet.h"
 
 static void update_position(
 		enum position_update update,
@@ -19,17 +21,28 @@ static void toggle_hud(const enum hud_toggle toggle);
 static void move_cursor(const enum cursor_movement movement);
 static void update_hud(int* const pressed_key);
 static void update_player(int* const pressed_key);
+static void update_all_hostile_actors();
+static void update_hostile_actor();
 
 void update(int* const pressed_key)
 {
+	if (BUTTON_QUIT == *pressed_key) {
+		return;
+	}
+
 	// Player and UI related updates dependent on user input.
 	update_hud(pressed_key);
+
+	if (is_game_over()) {
+		return;
+	}
 
 	if (player_has_spawned()) {
 		update_player(pressed_key);
 	}
 
 	// Enemy updates independent of user input.
+	update_all_hostile_actors();
 }
 
 static void update_hud(int* const pressed_key)
@@ -162,7 +175,7 @@ static void apply_operation_to_item(struct item* const selected_item, struct ite
 
 static void update_player(int* const pressed_key)
 {
-	if (is_direction_button(pressed_key)) {
+	if (is_direction_button(pressed_key) || is_wait_button(pressed_key)) {
 		update_position(key_to_position_update(pressed_key), get_player());
 		*pressed_key = 0;
 	}
@@ -174,6 +187,10 @@ static void update_position(
 {
 	int new_position_row = actor->row;
 	int new_position_col = actor->col;
+
+	if (POSITION_UPDATE_WAIT == update) {
+		return;
+	}
 
 	if (POSITION_UPDATE_DOWN == update) {
 		new_position_row = actor->row + 1;
@@ -204,4 +221,23 @@ static void update_position(
 	actor->row = new_position_row;
 	actor->col = new_position_col;
 	g_stage[actor->row][actor->col].occupant = actor;
+}
+
+static void update_all_hostile_actors()
+{
+	struct actor** const hostile_actors = get_all_hostile_actors();
+
+	for (int i = 0; i < ALL_HOSTILE_ACTORS_SIZE; i++) {
+		if (0 != hostile_actors[i]) {
+			update_hostile_actor(hostile_actors[i]);
+		}
+	}
+}
+
+static void update_hostile_actor(struct actor* const ha)
+{
+	enum position_update next_movement;
+
+	next_movement = movement_towards_player(ha);
+	update_position(next_movement, ha);
 }

@@ -13,5 +13,9 @@ void teardown_io(void);
 void populate_structures(void);
 void unpopulate_structures(void);
 void game_over(void);
+int is_game_over(void);
+enum position_update movement_towards_player(struct actor* const ha);
+
+extern int g_game_over;
 
 #endif

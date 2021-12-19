@@ -110,5 +110,6 @@ void do_combat(struct actor* const defender, struct actor* const attacker)
 	strcat(g_new_announcement, " damage");
 	announce(g_new_announcement);
 
+	LOG_DEBUG("%s\n", "next actor_take_damage()");
 	actor_take_damage(defender, damage_attacker_reduced);
 }

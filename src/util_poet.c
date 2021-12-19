@@ -1,8 +1,14 @@
 #include <assert.h>
 #include <stdlib.h>
 
-#include "util_poet.h"
 #include "log.h"
+#include "user_input.h"
+#include "util_poet.h"
+
+int g_game_over = 0;
+
+static enum position_update vertical_movement_towards_player(int row, int player_row);
+static enum position_update horizontal_movement_towards_player(int col, int player_col);
 
 int get_first_free_inventory_slot(struct item** const inventory)
 {
@@ -163,6 +169,59 @@ void unpopulate_structures(void)
 
 void game_over(void)
 {
-	strcat(g_new_announcement, "Game Over");
+	g_game_over = 1;
+	strcpy(g_new_announcement, "Game Over");
 	announce(g_new_announcement);
+}
+
+int is_game_over(void)
+{
+	return g_game_over;
+}
+
+enum position_update movement_towards_player(struct actor* const ha)
+{
+	struct actor* const p = get_player();
+
+	int ha_row = get_actor_row(ha);
+	int ha_col = get_actor_col(ha);
+	int p_row = get_actor_row(p);
+	int p_col = get_actor_col(p);
+
+	if (ha_row != p_row) {
+		return vertical_movement_towards_player(ha_row, p_row);
+	}
+
+	if (ha_col != p_col) {
+		return horizontal_movement_towards_player(ha_col, p_col);
+	}
+
+	// Player and hostile actor have same row and column
+	assert(0 == 1);
+}
+
+static enum position_update vertical_movement_towards_player(int row, int player_row)
+{
+	if (row < player_row) {
+		return POSITION_UPDATE_DOWN;
+	}
+
+	if (row > player_row) {
+		return POSITION_UPDATE_UP;
+	}
+
+	return POSITION_UPDATE_WAIT;
+}
+
+static enum position_update horizontal_movement_towards_player(int col, int player_col)
+{
+	if (col < player_col) {
+		return POSITION_UPDATE_RIGHT;
+	}
+
+	if (col > player_col) {
+		return POSITION_UPDATE_LEFT;
+	}
+
+	return POSITION_UPDATE_WAIT;
 }

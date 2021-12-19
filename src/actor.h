@@ -5,10 +5,6 @@
 #include "interact.h"
 #include "item.h"
 
-#define ALL_ACTORS_SIZE 32
-#define ACTOR_INVENTORY_SIZE 64
-#define ACTOR_EQUIPMENT_SIZE 6
-
 enum equipment_slot {
 	EQUIPMENT_SLOT_NONE,
 	EQUIPMENT_SLOT_HEAD,
@@ -63,6 +59,7 @@ extern int g_all_actors_player_index;
 
 struct actor*	get_player(void);
 struct actor**	get_all_actors(void);
+struct actor**	get_all_hostile_actors(void);
 struct item**	get_actor_inventory(struct actor* const a);
 struct item**	get_actor_equipment(struct actor* const a);
 struct item*	get_actor_item(struct actor* const a, int index);
@@ -118,5 +115,6 @@ void spawn_player(
 		const int col,
 		struct actor ** const all_actors);
 void player_equip_item(struct item* const item_to_equip);
+struct actor* spawn_actor_skeleton(int row, int col);
 
 #endif

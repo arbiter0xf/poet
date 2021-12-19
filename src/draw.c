@@ -1,5 +1,6 @@
 #include "draw.h"
 #include "log.h"
+#include "util_poet.h"
 
 enum hud_draw g_hud_to_draw = DRAW_HIDE;
 char g_hud_heading[HUD_HEADING_SIZE] = {0};
@@ -7,13 +8,26 @@ int g_cursor_index = 0;
 
 static void undraw_tile(int row, int col);
 static void draw_tile(int row, int col);
+static void draw_game_over();
 
 void draw(struct actor ** const all_actors)
 {
+	if (is_game_over()) {
+		draw_game_over();
+		goto do_refresh;
+	}
+
 	set_stage_slice_around_player();
 	draw_stage();
 	draw_hud();
+
+do_refresh:
 	refresh();
+}
+
+static void draw_game_over()
+{
+	LOG_DEBUG("%s\n", "draw_game_over()");
 }
 
 void draw_stage(void)
