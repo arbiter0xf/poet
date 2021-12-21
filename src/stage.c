@@ -21,6 +21,7 @@ static void load_stage_hideout(void);
 static void load_stage_dungeon(void);
 static void load_stage_sewer(void);
 static void load_stage_test1(void);
+static void load_stage_test2(void);
 static void set_stage_rect(int start_row, int start_col, int end_row, int end_col);
 static void set_stage_rect_tile(int row, int col, int start_row, int start_col, int end_row, int end_col);
 
@@ -36,6 +37,8 @@ void load_stage(enum stage_type s_type)
 		load_stage_sewer();
 	} else if (STAGE_TYPE_TEST1 == s_type) {
 		load_stage_test1();
+	} else if (STAGE_TYPE_TEST2 == s_type) {
+		load_stage_test2();
 	}
 }
 
@@ -345,6 +348,23 @@ static void load_stage_test1(void)
 	spawn_player(3, 3, get_all_actors());
 
 	set_stage_name("Test 1");
+}
+
+static void load_stage_test2(void)
+{
+	set_stage_rect(2, 2, 8, 8);
+	spawn_player(3, 3, get_all_actors());
+	spawn_item_drop(3, 4, get_all_actors(), get_all_items(), 2, SPAWN_ITEM_TYPE_CONSUMABLE);
+	(void) spawn_actor(
+			"portal",
+			4, 3,
+			ICON_PORTAL,
+			despawn_actor,
+			transport_to_stage,
+			100,
+			0);
+
+	set_stage_name("Test 2");
 }
 
 void unload_stage(void)

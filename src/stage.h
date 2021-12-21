@@ -26,6 +26,7 @@ enum stage_type {
 	STAGE_TYPE_DUNGEON,
 	STAGE_TYPE_SEWER,
 	STAGE_TYPE_TEST1,
+	STAGE_TYPE_TEST2,
 };
 
 struct terrain {

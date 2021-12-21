@@ -7,9 +7,6 @@
 #include "user_input.h"
 #include "util_poet.h"
 
-static void update_position(
-		enum position_update update,
-		struct actor* const actor);
 static void toggle_hud_inventory(void);
 static void toggle_hud_status(void);
 static void toggle_hud_equipment(void);
@@ -181,7 +178,7 @@ static void update_player(int* const pressed_key)
 	}
 }
 
-static void update_position(
+void update_position(
 		enum position_update update,
 		struct actor* const actor)
 {
