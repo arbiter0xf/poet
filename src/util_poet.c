@@ -226,7 +226,7 @@ static enum position_update horizontal_movement_towards_player(int col, int play
 	return POSITION_UPDATE_WAIT;
 }
 
-void copy_item_array(struct item** const items_src, struct item** const items_dst, const int length)
+void copy_item_array(struct item** const items_dst, struct item** const items_src, const int length)
 {
 	for (int i = 0; i < length; i++) {
 		items_dst[i] = items_src[i];

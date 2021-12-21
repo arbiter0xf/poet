@@ -148,16 +148,16 @@ void player_store_state(void)
 {
 	struct actor* p = get_player();
 
-	copy_item_array(p->inventory, g_stored_player_inventory, ACTOR_INVENTORY_SIZE);
-	copy_item_array(p->equipment, g_stored_player_equipment, ACTOR_EQUIPMENT_SIZE);
+	copy_item_array(g_stored_player_inventory, p->inventory, ACTOR_INVENTORY_SIZE);
+	copy_item_array(g_stored_player_equipment, p->equipment, ACTOR_EQUIPMENT_SIZE);
 }
 
 void player_restore_state(void)
 {
 	struct actor* p = get_player();
 
-	copy_item_array(g_stored_player_inventory, p->inventory, ACTOR_INVENTORY_SIZE);
-	copy_item_array(g_stored_player_equipment, p->equipment, ACTOR_EQUIPMENT_SIZE);
+	copy_item_array(p->inventory, g_stored_player_inventory, ACTOR_INVENTORY_SIZE);
+	copy_item_array(p->equipment, g_stored_player_equipment, ACTOR_EQUIPMENT_SIZE);
 }
 
 void (*get_player_op_equip(void)) (struct item* const item_to_equip)
