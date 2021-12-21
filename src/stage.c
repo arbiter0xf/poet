@@ -323,8 +323,6 @@ static void load_stage_dungeon(void)
 	spawn_player(2, 2, get_all_actors());
 
 	a = spawn_actor_skeleton(5, 8);
-	actor_set_base_damage_unarmed(a, 3);
-	actor_calculate_damage(a);
 
 	set_stage_name("Dungeon");
 }

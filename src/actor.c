@@ -458,7 +458,9 @@ void player_equip_item(struct item* const item_to_equip)
 
 struct actor* spawn_actor_skeleton(int row, int col)
 {
-	return spawn_actor(
+	struct actor* a;
+
+	a = spawn_actor(
 			"skeleton",
 			row, col,
 			ICON_SKELETON,
@@ -466,4 +468,8 @@ struct actor* spawn_actor_skeleton(int row, int col)
 			do_combat,
 			25,
 			1);
+	actor_set_base_damage_unarmed(a, 3);
+	actor_calculate_damage(a);
+
+	return a;
 }
