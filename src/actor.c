@@ -8,6 +8,9 @@ struct actor* g_all_actors[ALL_ACTORS_SIZE] = {0};
 struct actor* g_hostile_actors[ALL_ACTORS_SIZE] = {0};
 int g_all_actors_player_index; // Initialized when player allocated
 
+struct item* g_stored_player_inventory[ACTOR_INVENTORY_SIZE] = {0};
+struct item* g_stored_player_equipment[ACTOR_EQUIPMENT_SIZE] = {0};
+
 struct actor* get_player(void)
 {
 	struct actor* player = g_all_actors[g_all_actors_player_index];
@@ -139,6 +142,22 @@ int actor_is_armed(struct actor* const a)
 int player_has_spawned()
 {
 	return 0 != g_all_actors[g_all_actors_player_index];
+}
+
+void player_store_state(void)
+{
+	struct actor* p = get_player();
+
+	copy_item_array(p->inventory, g_stored_player_inventory, ACTOR_INVENTORY_SIZE);
+	copy_item_array(p->equipment, g_stored_player_equipment, ACTOR_EQUIPMENT_SIZE);
+}
+
+void player_restore_state(void)
+{
+	struct actor* p = get_player();
+
+	copy_item_array(g_stored_player_inventory, p->inventory, ACTOR_INVENTORY_SIZE);
+	copy_item_array(g_stored_player_equipment, p->equipment, ACTOR_EQUIPMENT_SIZE);
 }
 
 void (*get_player_op_equip(void)) (struct item* const item_to_equip)

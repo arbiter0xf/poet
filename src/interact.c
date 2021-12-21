@@ -83,8 +83,10 @@ void initiate_trade(struct actor* const self, struct actor* const initiator)
 
 void transport_to_stage(struct actor* const self, struct actor* const initiator)
 {
+	player_store_state();
 	unload_stage();
 	load_stage(STAGE_TYPE_DUNGEON);
+	player_restore_state();
 }
 
 void do_combat(struct actor* const defender, struct actor* const attacker)

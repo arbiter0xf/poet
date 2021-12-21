@@ -15,6 +15,7 @@ void unpopulate_structures(void);
 void game_over(void);
 int is_game_over(void);
 enum position_update movement_towards_player(struct actor* const ha);
+void copy_item_array(struct item** const items_src, struct item** const items_dst, const int length);
 
 extern int g_game_over;
 

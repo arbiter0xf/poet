@@ -57,6 +57,9 @@ extern struct actor* g_all_actors[ALL_ACTORS_SIZE];
 extern struct actor* g_hostile_actors[ALL_ACTORS_SIZE];
 extern int g_all_actors_player_index;
 
+extern struct item* g_stored_player_inventory[ACTOR_INVENTORY_SIZE];
+extern struct item* g_stored_player_equipment[ACTOR_EQUIPMENT_SIZE];
+
 struct actor*	get_player(void);
 struct actor**	get_all_actors(void);
 struct actor**	get_all_hostile_actors(void);
@@ -77,6 +80,8 @@ void		actor_set_base_damage_unarmed(struct actor* const a, int base_damage);
 void		actor_set_base_damage_armed(struct actor* const a, int base_damage);
 int		actor_is_armed(struct actor* const a);
 int		player_has_spawned(void);
+void		player_store_state(void);
+void		player_restore_state(void);
 void		actor_calculate_damage(struct actor* const a);
 int		actor_reduce_damage(struct actor* const a, unsigned int damage);
 void		actor_take_damage(struct actor* const a, unsigned int damage);
