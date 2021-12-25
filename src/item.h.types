@@ -17,8 +17,10 @@ struct item {
 	char name[32];
 	int all_items_index;
 	int suitable_equipment_slot;
+	int charges;
+	int charges_max;
 	/* int supported_item_operations[ITEM_OPERATIONS_SIZE] */
-	void (*affect) (struct actor* const user);
+	void (*affect) (struct actor* const user, struct item* const self); // TODO rename to consume
 };
 
 struct item_operation {

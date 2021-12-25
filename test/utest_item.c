@@ -26,7 +26,7 @@ Test(item, small_potion_restores_hp_to_player)
 	actor_hitpoints_reduce(player, 30);
 	cr_expect(70 == actor_get_hitpoints(player));
 
-	small_potion->affect(player);
+	small_potion->affect(player, small_potion);
 	cr_expect(90 == actor_get_hitpoints(player));
 }
 
@@ -41,7 +41,7 @@ Test(item, small_potion_restores_hp_to_hostile_actor)
 	actor_hitpoints_reduce(skeleton, 20);
 	cr_expect(5 == actor_get_hitpoints(skeleton));
 
-	small_potion->affect(skeleton);
+	small_potion->affect(skeleton, small_potion);
 	cr_expect(25 == actor_get_hitpoints(skeleton));
 }
 
@@ -55,6 +55,20 @@ Test(item, potion_effect_capped_to_max_hp)
 	small_potion = spawn_small_potion();
 
 	cr_expect(actor_get_hitpoints(player) == actor_get_hitpoints_max(player));
-	small_potion->affect(player);
+	small_potion->affect(player, small_potion);
 	cr_expect(actor_get_hitpoints(player) == actor_get_hitpoints_max(player));
+}
+
+Test(item, potion_charge_amount_decreases_on_use)
+{
+	struct actor* player;
+	struct item* small_potion;
+
+	spawn_player(2, 2, get_all_actors());
+	player = get_player();
+	small_potion = spawn_small_potion();
+
+	cr_expect(5 == item_get_charges(small_potion));
+	small_potion->affect(player, small_potion);
+	cr_expect(4 == item_get_charges(small_potion));
 }

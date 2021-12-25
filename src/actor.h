@@ -45,6 +45,7 @@ void		actor_calculate_damage(struct actor* const a);
 int		actor_reduce_damage(struct actor* const a, unsigned int damage);
 void		actor_hitpoints_reduce(struct actor* const a, unsigned int reduction);
 void		actor_take_damage(struct actor* const a, unsigned int damage);
+void		actor_acquire_item(struct item* const new_item);
 
 void despawn_actor(struct actor* const self);
 void despawn_all_actors(void);

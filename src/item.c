@@ -49,7 +49,8 @@ void apply_operation_drop(struct item* subject)
 
 struct item* spawn_item_consumable(
 		const char* name,
-		void (*affect) (struct actor* const user))
+		void (*affect) (struct actor* const user, struct item* const self),
+		const int charges_max)
 {
 	struct item** all_items;
 	int first_free;
@@ -68,6 +69,8 @@ struct item* spawn_item_consumable(
 	all_items[first_free]->all_items_index = first_free;
 	all_items[first_free]->suitable_equipment_slot = EQUIPMENT_SLOT_NONE;
 	all_items[first_free]->affect = affect;
+	all_items[first_free]->charges_max = charges_max;
+	all_items[first_free]->charges = charges_max;
 
 	return all_items[first_free];
 }
@@ -157,4 +160,16 @@ void transfer_inventory_content(struct item** inventory_from, struct item** inve
 		inventory_from[0] = 0;
 		i++;
 	}
+}
+
+void item_charge_decrement(struct item* const i)
+{
+	if (i->charges > 0) {
+		i->charges--;
+	}
+}
+
+int item_get_charges(struct item* const i)
+{
+	return i->charges;
 }
