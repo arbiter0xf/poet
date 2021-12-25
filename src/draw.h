@@ -4,7 +4,7 @@
 #include <ncurses.h>
 
 #include "actor.h"
-#include "item.h"
+#include "item.h.types"
 #include "stage.h"
 
 enum hud_draw {

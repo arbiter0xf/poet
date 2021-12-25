@@ -1,0 +1,59 @@
+#ifndef ACTOR_H_CONST_DEFINED
+#define ACTOR_H_CONST_DEFINED
+
+#define ALL_ACTORS_SIZE 32
+#define ALL_HOSTILE_ACTORS_SIZE ALL_ACTORS_SIZE
+#define ACTOR_INVENTORY_SIZE 64
+#define ACTOR_EQUIPMENT_SIZE 6
+
+#define ICON_PLAYER '@'
+#define ICON_ITEM_DROP ';'
+#define ICON_MERCHANT 'e'
+#define ICON_ORC 'o'
+#define ICON_PORTAL 'p'
+#define ICON_SKELETON 's'
+
+enum equipment_slot {
+	EQUIPMENT_SLOT_NONE,
+	EQUIPMENT_SLOT_HEAD,
+	EQUIPMENT_SLOT_CHEST,
+	EQUIPMENT_SLOT_RIGHT_HAND,
+	EQUIPMENT_SLOT_LEFT_HAND,
+	EQUIPMENT_SLOT_LEGS,
+};
+
+struct stats_combat {
+	int hitpoints;
+	int hitpoints_max;
+	int is_hostile;
+	unsigned int damage_unarmed;
+	unsigned int damage_armed;
+	unsigned int base_damage_unarmed;
+	unsigned int base_damage_armed;
+};
+
+struct stats_attribute {
+	unsigned int dexterity;
+	unsigned int intelligence;
+	unsigned int strength;
+};
+
+struct actor {
+	int row;
+	int col;
+	char icon;
+	char name[32];
+	int all_actors_index;
+	int all_hostile_actors_index;
+	struct item* inventory[ACTOR_INVENTORY_SIZE];
+	struct item* equipment[ACTOR_EQUIPMENT_SIZE];
+	struct stats_combat combat;
+	struct stats_attribute attribute;
+
+	void (*op_despawn) (struct actor* const self);
+	void (*op_equip) (struct item* const item_to_equip);
+	void (*op_use) (struct item* const item_to_use);
+	void (*op_on_interact) (struct actor* const self, struct actor* const other);
+};
+
+#endif

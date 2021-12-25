@@ -7,9 +7,13 @@
 struct actor* g_all_actors[ALL_ACTORS_SIZE] = {0};
 struct actor* g_hostile_actors[ALL_ACTORS_SIZE] = {0};
 int g_all_actors_player_index; // Initialized when player allocated
+int g_selected_item_index = 0;
 
 struct item* g_stored_player_inventory[ACTOR_INVENTORY_SIZE] = {0};
 struct item* g_stored_player_equipment[ACTOR_EQUIPMENT_SIZE] = {0};
+
+static void player_equip_item(struct item* const item_to_equip);
+static void player_use_item(struct item* const item_to_use);
 
 struct actor* get_player(void)
 {
@@ -49,6 +53,12 @@ int actor_get_hitpoints(struct actor* const a)
 {
 	assert(0 != a);
 	return a->combat.hitpoints;
+}
+
+int actor_get_hitpoints_max(struct actor* const a)
+{
+	assert(0 != a);
+	return a->combat.hitpoints_max;
 }
 
 struct actor** get_all_actors(void)
@@ -91,6 +101,24 @@ int actor_get_damage_armed(struct actor* const a)
 	return a->combat.damage_armed;
 }
 
+int player_get_selected_item_index(void)
+{
+	return g_selected_item_index;
+}
+
+void actor_hitpoints_increase(struct actor* const a, int inc_amount)
+{
+	int new_hitpoints = 0;
+
+	new_hitpoints = a->combat.hitpoints + inc_amount;
+
+	if (new_hitpoints > a->combat.hitpoints_max) {
+		a->combat.hitpoints = a->combat.hitpoints_max;
+	} else {
+		a->combat.hitpoints = new_hitpoints;
+	}
+}
+
 void set_actor_row(struct actor* const a, int new_row)
 {
 	assert(0 != a);
@@ -122,6 +150,11 @@ void actor_set_base_damage_armed(struct actor* const a, int base_damage)
 {
 	assert(0 != a);
 	a->combat.base_damage_armed = base_damage;
+}
+
+void player_set_selected_item_index(int index)
+{
+	g_selected_item_index = index;
 }
 
 int actor_is_armed(struct actor* const a)
@@ -166,6 +199,12 @@ void (*get_player_op_equip(void)) (struct item* const item_to_equip)
 	return player->op_equip;
 }
 
+void (*get_player_op_use(void)) (struct item* const item_to_use)
+{
+	struct actor* const player = get_player();
+	return player->op_use;
+}
+
 void actor_calculate_damage(struct actor* const a)
 {
 	a->combat.damage_unarmed = a->combat.base_damage_unarmed;
@@ -175,6 +214,11 @@ void actor_calculate_damage(struct actor* const a)
 int actor_reduce_damage(struct actor* const a, unsigned int damage)
 {
 	return damage;
+}
+
+void actor_hitpoints_reduce(struct actor* const a, unsigned int reduction)
+{
+	actor_take_damage(a, reduction);
 }
 
 void actor_take_damage(struct actor* const a, unsigned int damage)
@@ -194,67 +238,6 @@ void actor_take_damage(struct actor* const a, unsigned int damage)
 			game_over();
 		}
 	}
-}
-
-void spawn_item_consumable(struct item ** const all_items, int first_free)
-{
-	all_items[first_free] = malloc(sizeof(struct item));
-	all_items[first_free]->consumable = 1;
-	strcpy(all_items[first_free]->name, "potion");
-	all_items[first_free]->all_items_index = first_free;
-	all_items[first_free]->suitable_equipment_slot = EQUIPMENT_SLOT_NONE;
-}
-
-void spawn_item_equipment(
-		struct item ** const all_items,
-		int first_free,
-		const char* name,
-		int suitable_slot)
-{
-	all_items[first_free] = malloc(sizeof(struct item));
-	all_items[first_free]->consumable = 0;
-	strcpy(all_items[first_free]->name, name);
-	all_items[first_free]->all_items_index = first_free;
-	all_items[first_free]->suitable_equipment_slot = suitable_slot;
-}
-
-int spawn_item(
-		struct item ** const all_items,
-		int quality,
-		enum spawn_item_type type,
-		int* new_item_index)
-{
-	int first_free = -1;
-
-	first_free = get_first_free_item_slot(all_items);
-
-	if (-1 == first_free) {
-		return -1;
-	}
-
-	if (SPAWN_ITEM_TYPE_RANDOM == type) {
-		if (0 == random() % 2) {
-			spawn_item_consumable(all_items, first_free);
-		} else {
-			spawn_item_equipment(
-					all_items,
-					first_free,
-					"dagger",
-					EQUIPMENT_SLOT_RIGHT_HAND);
-		}
-	} else if (SPAWN_ITEM_TYPE_CONSUMABLE == type) {
-		spawn_item_consumable(all_items, first_free);
-	} else if (SPAWN_ITEM_TYPE_EQUIPMENT == type) {
-		spawn_item_equipment(
-				all_items,
-				first_free,
-				"dagger",
-				EQUIPMENT_SLOT_RIGHT_HAND);
-	}
-
-	*new_item_index = first_free;
-
-	return 0;
 }
 
 void despawn_actor(struct actor* const self)
@@ -307,9 +290,8 @@ void spawn_item_drop(
 		const int quality,
 		enum spawn_item_type type)
 {
-	int ret = 0;
+	struct item* new_item = 0;
 	int f = -1;
-	int new_item_index = -1;
 
 	f = get_first_free_actor_slot(all_actors);
 
@@ -319,9 +301,9 @@ void spawn_item_drop(
 		return;
 	}
 
-	ret = spawn_item(all_items, quality, type, &new_item_index);
-	if (0 != ret) {
-		strcpy(g_new_announcement, "Failed to spawn item drop, no free item slots.");
+	new_item = spawn_item(all_items, quality, type);
+	if (0 == new_item) {
+		strcpy(g_new_announcement, "Failed to spawn item drop");
 		announce(g_new_announcement);
 		return;
 	}
@@ -339,7 +321,7 @@ void spawn_item_drop(
 	all_actors[f]->op_on_interact	= get_picked;
 	all_actors[f]->op_despawn	= despawn_actor;
 	all_actors[f]->op_equip		= 0; /* Only valid for player */
-	all_actors[f]->inventory[0]	= all_items[new_item_index];
+	all_actors[f]->inventory[0]	= new_item;
 
 	g_stage[row][col].occupant = all_actors[f];
 
@@ -440,6 +422,7 @@ void spawn_player(
 	all_actors[f]->icon				= ICON_PLAYER;
 	all_actors[f]->all_actors_index 		= f;
 	all_actors[f]->op_equip				= player_equip_item;
+	all_actors[f]->op_use				= player_use_item;
 	all_actors[f]->op_on_interact			= do_combat;
 	all_actors[f]->op_despawn			= despawn_actor_player;
 	all_actors[f]->combat.hitpoints_max		= 100;
@@ -462,7 +445,7 @@ void spawn_player(
 	LOG_INFO("Spawn %s at (%d %d)\n", all_actors[f]->name, row, col);
 }
 
-void player_equip_item(struct item* const item_to_equip)
+static void player_equip_item(struct item* const item_to_equip)
 {
 	struct actor* const player = get_player();
 	int slot = EQUIPMENT_SLOT_NONE;
@@ -472,6 +455,26 @@ void player_equip_item(struct item* const item_to_equip)
 
 	strcpy(g_new_announcement, "Equipped item: ");
 	strcat(g_new_announcement, player->equipment[slot]->name);
+	announce(g_new_announcement);
+}
+
+static void player_use_item(struct item* const item_to_use)
+{
+	struct actor* const player = get_player();
+
+	if (1 != item_to_use->consumable) {
+		strcpy(g_new_announcement, "Item: ");
+		strcat(g_new_announcement, item_to_use->name);
+		strcat(g_new_announcement, " does not support use");
+		announce(g_new_announcement);
+
+		return;
+	}
+
+	item_to_use->affect(player);
+
+	strcpy(g_new_announcement, "Used item: ");
+	strcat(g_new_announcement, item_to_use->name);
 	announce(g_new_announcement);
 }
 

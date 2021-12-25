@@ -3,7 +3,7 @@
 
 #include <string.h>
 
-#include "draw.h.const"
+#include "draw.h.types"
 
 #define STAGE_SIZE_HORIZONTAL 40
 #define STAGE_SIZE_VERTICAL STAGE_SIZE_HORIZONTAL

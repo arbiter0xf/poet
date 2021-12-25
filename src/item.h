@@ -1,26 +1,9 @@
 #ifndef ITEM_H_DEFINED
 #define ITEM_H_DEFINED
 
-#include "actor.h.const"
-#include "draw.h.const"
-
-#define ITEM_OPERATIONS_SIZE HUD_ROWS
-
-#define ALL_ITEMS_SIZE ACTOR_INVENTORY_SIZE * ALL_ACTORS_SIZE
-
-struct item {
-	int amount;
-	char consumable;
-	char name[32];
-	int all_items_index;
-	int suitable_equipment_slot;
-	/* int supported_item_operations[ITEM_OPERATIONS_SIZE] */
-};
-
-struct item_operation {
-	char name[32];
-	void (*apply) (struct item* const subject);
-};
+#include "actor.h.types"
+#include "draw.h.types"
+#include "item.h.types"
 
 extern struct item* g_selected_item;
 extern struct item* g_all_items[ALL_ITEMS_SIZE];
@@ -34,5 +17,23 @@ struct item_operation* get_item_operation(int index);
 void apply_operation_use(struct item* subject);
 void apply_operation_equip(struct item* subject);
 void apply_operation_drop(struct item* subject);
+
+struct item* spawn_item_consumable(
+		struct item** const all_items,
+		int first_free,
+		const char* name,
+		void (*affect) (struct actor* const user));
+struct item* spawn_item_equipment(
+		struct item** const all_items,
+		int first_free,
+		const char* name,
+		int suitable_slot);
+struct item* spawn_item(
+		struct item** const all_items,
+		int quality,
+		enum spawn_item_type type);
+
+void transfer_inventory_content(struct item** inventory_from, struct item** inventory_to);
+void add_to_inventory(struct item* item_to_add, struct item** inventory);
 
 #endif

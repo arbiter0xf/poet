@@ -10,7 +10,7 @@
 static void toggle_hud_inventory(void);
 static void toggle_hud_status(void);
 static void toggle_hud_equipment(void);
-static void select_operation_for_item(struct item* const selected_item);
+static void select_operation_for_item(int cursor_index);
 static void set_hud_select_item_operation(struct item* const selected_item);
 static void set_hud_hide(void);
 static void apply_operation_to_item(struct item* const selected_item, struct item_operation* operation);
@@ -58,7 +58,7 @@ static void update_hud(int* const pressed_key)
 
 	if (is_hud_select_button(pressed_key)) {
 		if (DRAW_INVENTORY == g_hud_to_draw) {
-			select_operation_for_item(get_actor_item(get_player(), g_cursor_index));
+			select_operation_for_item(g_cursor_index);
 			*pressed_key = 0;
 			return;
 		}
@@ -142,9 +142,16 @@ static void move_cursor(const enum cursor_movement movement)
 	g_cursor_index = new_cursor;
 }
 
-static void select_operation_for_item(struct item* const selected_item)
+static void select_operation_for_item(int cursor_index)
 {
+	struct actor* player;
+	struct item* selected_item;
+
+	player = get_player();
+	selected_item = get_actor_item(player, cursor_index);
+
 	set_selected_item(selected_item);
+	player_set_selected_item_index(cursor_index);
 	set_hud_select_item_operation(selected_item);
 }
 

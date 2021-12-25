@@ -1,3 +1,4 @@
+#include "actor.h"
 #include "draw.h"
 #include "log.h"
 #include "util_poet.h"
