@@ -19,7 +19,7 @@ Test(item, small_potion_restores_hp_to_player)
 	struct actor* player;
 	struct item* small_potion;
 
-	spawn_player(2, 2, get_all_actors());
+	spawn_player(2, 2);
 	player = get_player();
 	small_potion = spawn_small_potion();
 
@@ -50,7 +50,7 @@ Test(item, potion_effect_capped_to_max_hp)
 	struct actor* player;
 	struct item* small_potion;
 
-	spawn_player(2, 2, get_all_actors());
+	spawn_player(2, 2);
 	player = get_player();
 	small_potion = spawn_small_potion();
 
@@ -64,7 +64,7 @@ Test(item, potion_charge_amount_decreases_on_use)
 	struct actor* player;
 	struct item* small_potion;
 
-	spawn_player(2, 2, get_all_actors());
+	spawn_player(2, 2);
 	player = get_player();
 	small_potion = spawn_small_potion();
 

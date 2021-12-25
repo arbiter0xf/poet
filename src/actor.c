@@ -395,11 +395,12 @@ struct actor* spawn_actor(
 
 void spawn_player(
 		const int row,
-		const int col,
-		struct actor ** const all_actors)
+		const int col)
 {
+	struct actor** all_actors = 0;
 	int f = -1;
 
+	all_actors = get_all_actors();
 	f = get_first_free_actor_slot(all_actors);
 
 	if (-1 == f) {

@@ -67,8 +67,7 @@ struct actor* spawn_actor(
 		const int is_hostile);
 void spawn_player(
 		const int row,
-		const int col,
-		struct actor ** const all_actors);
+		const int col);
 struct actor* spawn_actor_skeleton(int row, int col);
 
 #endif

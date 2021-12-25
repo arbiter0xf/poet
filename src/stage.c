@@ -292,7 +292,7 @@ static void load_stage_hideout(void)
 
 	set_stage_rect(0, 0, hideout_end_vertical, hideout_end_horizontal);
 
-	spawn_player(2, 2, get_all_actors());
+	spawn_player(2, 2);
 	(void) spawn_actor(
 			"merchant",
 			5, 8,
@@ -322,7 +322,7 @@ static void load_stage_dungeon(void)
 
 	set_stage_rect(0, 0, dungeon_end_vertical, dungeon_end_horizontal);
 
-	spawn_player(2, 2, get_all_actors());
+	spawn_player(2, 2);
 
 	(void) spawn_actor_skeleton(5, 8);
 
@@ -335,7 +335,7 @@ static void load_stage_sewer(void)
 	set_stage_rect(2, 6, 4, 14);
 	set_stage_rect(0, 14, 6, 20);
 
-	spawn_player(2, 2, get_all_actors());
+	spawn_player(2, 2);
 
 	set_stage_name("Sewer");
 }
@@ -344,7 +344,7 @@ static void load_stage_test1(void)
 {
 	set_stage_rect(2, 2, 8, 8);
 
-	spawn_player(3, 3, get_all_actors());
+	spawn_player(3, 3);
 
 	set_stage_name("Test 1");
 }
@@ -352,7 +352,7 @@ static void load_stage_test1(void)
 static void load_stage_test2(void)
 {
 	set_stage_rect(2, 2, 8, 8);
-	spawn_player(3, 3, get_all_actors());
+	spawn_player(3, 3);
 	spawn_item_drop(3, 4, get_all_actors(), get_all_items(), 2, SPAWN_ITEM_TYPE_CONSUMABLE);
 	(void) spawn_actor(
 			"portal",

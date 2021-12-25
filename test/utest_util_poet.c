@@ -14,7 +14,7 @@ Test(util_poet, get_movement_leading_from_actors_position_towards_player)
 	struct actor* skeleton;
 	enum position_update movement;
 
-	spawn_player(2, 2, get_all_actors());
+	spawn_player(2, 2);
 	player = get_player();
 	skeleton = spawn_actor_skeleton(3, 3);
 
