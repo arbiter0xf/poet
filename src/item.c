@@ -48,11 +48,20 @@ void apply_operation_drop(struct item* subject)
 }
 
 struct item* spawn_item_consumable(
-		struct item ** const all_items,
-		int first_free,
 		const char* name,
 		void (*affect) (struct actor* const user))
 {
+	struct item** all_items;
+	int first_free;
+
+	all_items = get_all_items();
+	first_free = get_first_free_item_slot(all_items);
+
+	if (-1 == first_free) {
+		LOG_ERROR("%s", "No free item slots when spawning item");
+		return 0;
+	}
+
 	all_items[first_free] = malloc(sizeof(struct item));
 	all_items[first_free]->consumable = 1;
 	strcpy(all_items[first_free]->name, name);

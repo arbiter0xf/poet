@@ -19,8 +19,6 @@ void apply_operation_equip(struct item* subject);
 void apply_operation_drop(struct item* subject);
 
 struct item* spawn_item_consumable(
-		struct item** const all_items,
-		int first_free,
 		const char* name,
 		void (*affect) (struct actor* const user));
 struct item* spawn_item_equipment(
