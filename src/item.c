@@ -49,7 +49,7 @@ void apply_operation_drop(struct item* subject)
 
 struct item* spawn_item_consumable(
 		const char* name,
-		void (*affect) (struct actor* const user, struct item* const self),
+		void (*consume) (struct actor* const user, struct item* const self),
 		const int charges_max)
 {
 	struct item** all_items;
@@ -68,7 +68,7 @@ struct item* spawn_item_consumable(
 	strcpy(all_items[first_free]->name, name);
 	all_items[first_free]->all_items_index = first_free;
 	all_items[first_free]->suitable_equipment_slot = EQUIPMENT_SLOT_NONE;
-	all_items[first_free]->affect = affect;
+	all_items[first_free]->consume = consume;
 	all_items[first_free]->charges_max = charges_max;
 	all_items[first_free]->charges = charges_max;
 

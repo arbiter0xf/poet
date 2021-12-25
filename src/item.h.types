@@ -20,7 +20,7 @@ struct item {
 	int charges;
 	int charges_max;
 	/* int supported_item_operations[ITEM_OPERATIONS_SIZE] */
-	void (*affect) (struct actor* const user, struct item* const self); // TODO rename to consume
+	void (*consume) (struct actor* const user, struct item* const self);
 };
 
 struct item_operation {

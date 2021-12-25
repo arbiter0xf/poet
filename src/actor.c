@@ -471,7 +471,7 @@ static void player_use_item(struct item* const item_to_use)
 		return;
 	}
 
-	item_to_use->affect(player, item_to_use);
+	item_to_use->consume(player, item_to_use);
 
 	strcpy(g_new_announcement, "Used item: ");
 	strcat(g_new_announcement, item_to_use->name);

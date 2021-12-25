@@ -20,7 +20,7 @@ void apply_operation_drop(struct item* subject);
 
 struct item* spawn_item_consumable(
 		const char* name,
-		void (*affect) (struct actor* const user, struct item* const self),
+		void (*consume) (struct actor* const user, struct item* const self),
 		const int charges_max);
 struct item* spawn_item_equipment(
 		struct item** const all_items,
