@@ -52,8 +52,6 @@ void despawn_all_actors(void);
 void spawn_item_drop(
 		const int row,
 		const int col,
-		struct actor ** const all_actors,
-		struct item ** const all_items,
 		const int quality,
 		enum spawn_item_type type);
 struct actor* spawn_actor(

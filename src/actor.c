@@ -285,14 +285,16 @@ void despawn_player()
 void spawn_item_drop(
 		const int row,
 		const int col,
-		struct actor ** const all_actors,
-		struct item ** const all_items,
 		const int quality,
 		enum spawn_item_type type)
 {
+	struct actor** all_actors = 0;
+	struct item** all_items = 0;
 	struct item* new_item = 0;
 	int f = -1;
 
+	all_actors = get_all_actors();
+	all_items = get_all_items();
 	f = get_first_free_actor_slot(all_actors);
 
 	if (-1 == f) {

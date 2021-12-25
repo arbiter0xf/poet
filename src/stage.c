@@ -309,8 +309,8 @@ static void load_stage_hideout(void)
 			transport_to_stage,
 			100,
 			0);
-	spawn_item_drop(4, 4, get_all_actors(), get_all_items(), 2, SPAWN_ITEM_TYPE_CONSUMABLE);
-	spawn_item_drop(5, 5, get_all_actors(), get_all_items(), 2, SPAWN_ITEM_TYPE_EQUIPMENT);
+	spawn_item_drop(4, 4, 2, SPAWN_ITEM_TYPE_CONSUMABLE);
+	spawn_item_drop(5, 5, 2, SPAWN_ITEM_TYPE_EQUIPMENT);
 
 	set_stage_name("Hideout");
 }
@@ -353,7 +353,7 @@ static void load_stage_test2(void)
 {
 	set_stage_rect(2, 2, 8, 8);
 	spawn_player(3, 3);
-	spawn_item_drop(3, 4, get_all_actors(), get_all_items(), 2, SPAWN_ITEM_TYPE_CONSUMABLE);
+	spawn_item_drop(3, 4, 2, SPAWN_ITEM_TYPE_CONSUMABLE);
 	(void) spawn_actor(
 			"portal",
 			4, 3,
