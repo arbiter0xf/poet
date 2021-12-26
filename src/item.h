@@ -14,9 +14,9 @@ struct item* get_selected_item(void);
 void set_selected_item(struct item* new_item);
 struct item_operation* get_item_operation(int index);
 
-void apply_operation_use(struct item* subject);
-void apply_operation_equip(struct item* subject);
-void apply_operation_drop(struct item* subject);
+void apply_operation_use(struct item* object_item);
+void apply_operation_equip(struct item* object_item);
+void apply_operation_drop(struct item* object_item);
 
 struct item* spawn_item_consumable(
 		const char* name,
