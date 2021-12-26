@@ -72,3 +72,26 @@ Test(item, potion_charge_amount_decreases_on_use)
 	small_potion->consume(player, small_potion);
 	cr_expect(4 == item_get_charges(small_potion));
 }
+
+Test(item, consuming_potion_has_no_effect_when_out_of_charges)
+{
+	struct actor* player;
+	struct item* small_potion;
+
+	spawn_player(2, 2);
+	player = get_player();
+	small_potion = spawn_small_potion();
+
+	small_potion->consume(player, small_potion);
+	small_potion->consume(player, small_potion);
+	small_potion->consume(player, small_potion);
+	small_potion->consume(player, small_potion);
+	small_potion->consume(player, small_potion);
+	cr_expect(0 == item_get_charges(small_potion));
+
+	actor_hitpoints_reduce(player, 30);
+	cr_expect(70 == actor_get_hitpoints(player));
+
+	small_potion->consume(player, small_potion);
+	cr_expect(70 == actor_get_hitpoints(player));
+}

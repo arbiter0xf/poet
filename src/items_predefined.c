@@ -12,6 +12,8 @@ struct item* spawn_small_potion(void)
 
 static void apply_small_potion(struct actor* const target, struct item* const self)
 {
-	actor_hitpoints_increase(target, 20);
-	item_charge_decrement(self);
+	if (item_get_charges(self) > 0) {
+		actor_hitpoints_increase(target, 20);
+		item_charge_decrement(self);
+	}
 }
