@@ -32,13 +32,13 @@ struct item_operation* get_item_operation(int index)
 
 void apply_operation_use(struct item* object_item)
 {
-	void (*op_use) (struct item* const item_to_use) = get_player_op_use();
+	void (*op_use) (struct item* const item_to_use) = player_get_op_use();
 	op_use(object_item);
 }
 
 void apply_operation_equip(struct item* object_item)
 {
-	void (*op_equip) (struct item* const item_to_equip) = get_player_op_equip();
+	void (*op_equip) (struct item* const item_to_equip) = player_get_op_equip();
 	op_equip(object_item);
 }
 

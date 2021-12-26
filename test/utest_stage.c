@@ -60,7 +60,7 @@ Test(stage, player_items_retained_on_stage_transport, .init = setup, .fini = tea
 	// Player should have been despawned during stage transport
 	player = get_player();
 
-	cr_expect(2 == get_actor_row(player)); // Coordinates of new stage
-	cr_expect(2 == get_actor_col(player));
+	cr_expect(2 == actor_get_row(player)); // Coordinates of new stage
+	cr_expect(2 == actor_get_col(player));
 	cr_expect(0 != player->inventory[0]); // Items retained
 }

@@ -22,28 +22,28 @@ struct actor* get_player(void)
 	return player;
 }
 
-struct item** get_actor_inventory(struct actor* const a)
+struct item** actor_get_inventory(struct actor* const a)
 {
 	assert(0 != a);
 	return a->inventory;
 }
 
-struct item** get_actor_equipment(struct actor* const a)
+struct item** actor_get_equipment(struct actor* const a)
 {
 	assert(0 != a);
 	return a->equipment;
 }
 
-struct item* get_actor_item(struct actor* const a, int index)
+struct item* actor_get_item(struct actor* const a, int index)
 {
 	assert(0 != a);
-	struct item** inventory = get_actor_inventory(a);
+	struct item** inventory = actor_get_inventory(a);
 	struct item* item = inventory[index];
 	assert(0 != item);
 	return item;
 }
 
-char* get_actor_name(struct actor* const a)
+char* actor_get_name(struct actor* const a)
 {
 	assert(0 != a);
 	return a->name;
@@ -71,19 +71,19 @@ struct actor** get_all_hostile_actors(void)
 	return g_hostile_actors;
 }
 
-int get_actor_row(struct actor* const a)
+int actor_get_row(struct actor* const a)
 {
 	assert(0 != a);
 	return a->row;
 }
 
-int get_actor_col(struct actor* const a)
+int actor_get_col(struct actor* const a)
 {
 	assert(0 != a);
 	return a->col;
 }
 
-int get_actor_is_hostile(struct actor* const a)
+int actor_get_is_hostile(struct actor* const a)
 {
 	assert(0 != a);
 	return a->combat.is_hostile;
@@ -119,24 +119,24 @@ void actor_hitpoints_increase(struct actor* const a, int inc_amount)
 	}
 }
 
-void set_actor_row(struct actor* const a, int new_row)
+void actor_set_row(struct actor* const a, int new_row)
 {
 	assert(0 != a);
 
-	if (!tile_is_occupied(new_row, get_actor_col(a))) {
-		unoccupy_tile(get_actor_row(a), get_actor_col(a));
+	if (!tile_is_occupied(new_row, actor_get_col(a))) {
+		unoccupy_tile(actor_get_row(a), actor_get_col(a));
 		a->row = new_row;
-		occupy_tile(get_actor_row(a), get_actor_col(a), a);
+		occupy_tile(actor_get_row(a), actor_get_col(a), a);
 	}
 }
 
-void set_actor_col(struct actor* const a, int new_col)
+void actor_set_col(struct actor* const a, int new_col)
 {
 	assert(0 != a);
-	if (!tile_is_occupied(get_actor_row(a), new_col)) {
-		unoccupy_tile(get_actor_row(a), get_actor_col(a));
+	if (!tile_is_occupied(actor_get_row(a), new_col)) {
+		unoccupy_tile(actor_get_row(a), actor_get_col(a));
 		a->col = new_col;
-		occupy_tile(get_actor_row(a), get_actor_col(a), a);
+		occupy_tile(actor_get_row(a), actor_get_col(a), a);
 	}
 }
 
@@ -160,7 +160,7 @@ void player_set_selected_item_index(int index)
 int actor_is_armed(struct actor* const a)
 {
 	int both_hands_empty;
-	struct item** const equipment = get_actor_equipment(a);
+	struct item** const equipment = actor_get_equipment(a);
 
 	both_hands_empty =
 		0 == equipment[EQUIPMENT_SLOT_RIGHT_HAND] &&
@@ -193,13 +193,13 @@ void player_restore_state(void)
 	copy_item_array(p->equipment, g_stored_player_equipment, ACTOR_EQUIPMENT_SIZE);
 }
 
-void (*get_player_op_equip(void)) (struct item* const item_to_equip)
+void (*player_get_op_equip(void)) (struct item* const item_to_equip)
 {
 	struct actor* const player = get_player();
 	return player->op_equip;
 }
 
-void (*get_player_op_use(void)) (struct item* const item_to_use)
+void (*player_get_op_use(void)) (struct item* const item_to_use)
 {
 	struct actor* const player = get_player();
 	return player->op_use;
@@ -243,8 +243,8 @@ void actor_take_damage(struct actor* const a, unsigned int damage)
 void despawn_actor(struct actor* const self)
 {
 	struct actor** hostile_actors;
-	int row = get_actor_row(self);
-	int col = get_actor_col(self);
+	int row = actor_get_row(self);
+	int col = actor_get_col(self);
 
 	g_stage[row][col].occupant = 0;
 	g_all_actors[self->all_actors_index] = 0;
@@ -259,8 +259,8 @@ void despawn_actor(struct actor* const self)
 
 void despawn_actor_player(struct actor* const self)
 {
-	int row = get_actor_row(self);
-	int col = get_actor_col(self);
+	int row = actor_get_row(self);
+	int col = actor_get_col(self);
 
 	g_stage[row][col].occupant = 0;
 	g_all_actors[self->all_actors_index] = 0;

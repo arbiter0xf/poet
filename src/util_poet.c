@@ -183,10 +183,10 @@ enum position_update movement_towards_player(struct actor* const ha)
 {
 	struct actor* const p = get_player();
 
-	int ha_row = get_actor_row(ha);
-	int ha_col = get_actor_col(ha);
-	int p_row = get_actor_row(p);
-	int p_col = get_actor_col(p);
+	int ha_row = actor_get_row(ha);
+	int ha_col = actor_get_col(ha);
+	int p_row = actor_get_row(p);
+	int p_col = actor_get_col(p);
 
 	if (ha_row != p_row) {
 		return vertical_movement_towards_player(ha_row, p_row);

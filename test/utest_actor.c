@@ -23,17 +23,17 @@ Test(actor, player_has_spawned)
 Test(actor, player_get_coordinates)
 {
 	spawn_player(2, 2);
-	cr_expect(2 == get_actor_col(get_player()));
-	cr_expect(2 == get_actor_row(get_player()));
+	cr_expect(2 == actor_get_col(get_player()));
+	cr_expect(2 == actor_get_row(get_player()));
 }
 
 Test(actor, player_change_coordinates)
 {
 	spawn_player(2, 2);
-	set_actor_row(get_player(), 4);
-	set_actor_col(get_player(), 4);
-	cr_expect(4 == get_actor_col(get_player()));
-	cr_expect(4 == get_actor_row(get_player()));
+	actor_set_row(get_player(), 4);
+	actor_set_col(get_player(), 4);
+	cr_expect(4 == actor_get_col(get_player()));
+	cr_expect(4 == actor_get_row(get_player()));
 }
 
 Test(actor, player_spawn_sets_tile_as_occupied)
@@ -47,16 +47,16 @@ Test(actor, player_coordinate_change_unoccupies_tile)
 {
 	spawn_player(2, 2);
 	cr_expect(1 == tile_is_occupied(2, 2));
-	set_actor_row(get_player(), 4);
-	set_actor_col(get_player(), 4);
+	actor_set_row(get_player(), 4);
+	actor_set_col(get_player(), 4);
 	cr_expect(0 == tile_is_occupied(2, 2));
 }
 
 Test(actor, player_coordinate_change_occupies_tile)
 {
 	spawn_player(2, 2);
-	set_actor_row(get_player(), 4);
-	set_actor_col(get_player(), 4);
+	actor_set_row(get_player(), 4);
+	actor_set_col(get_player(), 4);
 	cr_expect(1 == tile_is_occupied(4, 4));
 }
 
@@ -73,9 +73,9 @@ Test(actor, hostile_actor_get_coordinates)
 			20,
 			1);
 
-	cr_expect(1 == get_actor_is_hostile(a));
-	cr_expect(5 == get_actor_row(a));
-	cr_expect(8 == get_actor_col(a));
+	cr_expect(1 == actor_get_is_hostile(a));
+	cr_expect(5 == actor_get_row(a));
+	cr_expect(8 == actor_get_col(a));
 
 	a->op_despawn(a);
 }

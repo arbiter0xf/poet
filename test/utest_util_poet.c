@@ -21,20 +21,20 @@ Test(util_poet, get_movement_leading_from_actors_position_towards_player)
 	movement = movement_towards_player(skeleton);
 	cr_expect(POSITION_UPDATE_UP == movement);
 
-	set_actor_row(skeleton, 2);
-	set_actor_col(skeleton, 4);
+	actor_set_row(skeleton, 2);
+	actor_set_col(skeleton, 4);
 
 	movement = movement_towards_player(skeleton);
 	cr_expect(POSITION_UPDATE_LEFT == movement);
 
-	set_actor_row(skeleton, 2);
-	set_actor_col(skeleton, 0);
+	actor_set_row(skeleton, 2);
+	actor_set_col(skeleton, 0);
 
 	movement = movement_towards_player(skeleton);
 	cr_expect(POSITION_UPDATE_RIGHT == movement);
 
-	set_actor_row(skeleton, 0);
-	set_actor_col(skeleton, 0);
+	actor_set_row(skeleton, 0);
+	actor_set_col(skeleton, 0);
 
 	movement = movement_towards_player(skeleton);
 	cr_expect(POSITION_UPDATE_DOWN == movement);

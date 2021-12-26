@@ -87,8 +87,8 @@ void set_stage_slice_around_player(void)
 	LOG_DEBUG("COL_DRAW_STAGE_LEN / 2 is: %d\n", COL_DRAW_STAGE_LEN / 2);
 #endif
 
-	p_row = get_actor_row(get_player());
-	p_col = get_actor_col(get_player());
+	p_row = actor_get_row(get_player());
+	p_col = actor_get_col(get_player());
 	min_vertical	= p_row - (ROW_DRAW_STAGE_LEN / 2);
 	min_horizontal	= p_col - (COL_DRAW_STAGE_LEN / 2);
 #if 0

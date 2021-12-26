@@ -133,16 +133,16 @@ void draw_hud_status(void)
 	move(ROW_DRAW_HUD_ZERO, COL_DRAW_HUD_ZERO);
 	printw("%s", g_hud_heading);
 	move(ROW_DRAW_HUD_ZERO + 2, COL_DRAW_HUD_ZERO);
-	printw("Name: %s", get_actor_name(player));
+	printw("Name: %s", actor_get_name(player));
 	move(ROW_DRAW_HUD_ZERO + 3, COL_DRAW_HUD_ZERO);
-	printw("Coordinates: (%d, %d)", get_actor_row(player), get_actor_col(player));
+	printw("Coordinates: (%d, %d)", actor_get_row(player), actor_get_col(player));
 	move(ROW_DRAW_HUD_ZERO + 4, COL_DRAW_HUD_ZERO);
 	printw("Hitpoints: %d", actor_get_hitpoints(player));
 }
 
 void draw_hud_equipment(void)
 {
-	struct item** const equipment = get_actor_equipment(get_player());
+	struct item** const equipment = actor_get_equipment(get_player());
 
 	move(ROW_DRAW_HUD_ZERO, COL_DRAW_HUD_ZERO);
 	printw("%s", g_hud_heading);
@@ -194,7 +194,7 @@ void draw_hud(void)
 		break;
 	case DRAW_INVENTORY:
 		draw_hud_hide();
-		player_inventory = get_actor_inventory(get_player());
+		player_inventory = actor_get_inventory(get_player());
 		draw_hud_inventory(player_inventory, g_cursor_index);
 		break;
 	case DRAW_STATUS:
