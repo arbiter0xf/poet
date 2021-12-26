@@ -37,5 +37,6 @@ void add_to_inventory(struct item* item_to_add, struct item** inventory);
 
 void item_charge_decrement(struct item* const i);
 int item_get_charges(struct item* const i);
+int item_is_consumable(struct item* const t);
 
 #endif

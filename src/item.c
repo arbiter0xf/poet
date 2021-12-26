@@ -162,14 +162,19 @@ void transfer_inventory_content(struct item** inventory_from, struct item** inve
 	}
 }
 
-void item_charge_decrement(struct item* const i)
+void item_charge_decrement(struct item* const t)
 {
-	if (i->charges > 0) {
-		i->charges--;
+	if (t->charges > 0) {
+		t->charges--;
 	}
 }
 
-int item_get_charges(struct item* const i)
+int item_get_charges(struct item* const t)
 {
-	return i->charges;
+	return t->charges;
+}
+
+int item_is_consumable(struct item* const t)
+{
+	return t->consumable;
 }

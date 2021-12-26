@@ -9,7 +9,8 @@ int g_cursor_index = 0;
 
 static void undraw_tile(int row, int col);
 static void draw_tile(int row, int col);
-static void draw_game_over();
+static void draw_game_over(void);
+static void print_amount(const int amount);
 
 void draw(struct actor ** const all_actors)
 {
@@ -26,7 +27,7 @@ do_refresh:
 	refresh();
 }
 
-static void draw_game_over()
+static void draw_game_over(void)
 {
 	LOG_DEBUG("%s\n", "draw_game_over()");
 }
@@ -118,6 +119,10 @@ void draw_hud_inventory(struct item** inventory, const int cursor_pos)
 			printw("   ");
 		}
 		printw("%s", inventory[i]->name);
+
+		if (item_is_consumable(inventory[i])) {
+			print_amount(item_get_charges(inventory[i]));
+		}
 	}
 }
 
@@ -207,4 +212,14 @@ void draw_hud(void)
 	}
 
 	draw_hud_stage_name();
+}
+
+static void print_amount(const int amount)
+{
+	char amount_num[8];
+
+	snprintf(amount_num, 8, "%d", amount);
+	printw(" [");
+	printw("%s", amount_num);
+	printw("]");
 }
