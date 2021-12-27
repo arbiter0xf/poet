@@ -113,9 +113,10 @@ void actor_hitpoints_increase(struct actor* const a, int inc_amount)
 
 	if (new_hitpoints > a->combat.hitpoints_max) {
 		a->combat.hitpoints = a->combat.hitpoints_max;
-	} else {
-		a->combat.hitpoints = new_hitpoints;
+		return;
 	}
+
+	a->combat.hitpoints = new_hitpoints;
 }
 
 void actor_set_row(struct actor* const a, int new_row)
