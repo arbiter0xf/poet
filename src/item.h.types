@@ -17,6 +17,8 @@ struct item {
 	char name[32];
 	int all_items_index;
 	int suitable_equipment_slot;
+	int subcharges;
+	int subcharges_max;
 	int charges;
 	int charges_max;
 	/* int supported_item_operations[ITEM_OPERATIONS_SIZE] */

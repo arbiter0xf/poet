@@ -7,6 +7,8 @@
 #include "user_input.h"
 #include "util_poet.h"
 
+int g_ui_enabled = 1;
+
 static void toggle_hud_inventory(void);
 static void toggle_hud_status(void);
 static void toggle_hud_equipment(void);
@@ -18,8 +20,19 @@ static void toggle_hud(const enum hud_toggle toggle);
 static void move_cursor(const enum cursor_movement movement);
 static void update_hud(int* const pressed_key);
 static void update_player(int* const pressed_key);
+static void update_player_items(struct actor* const player);
 static void update_all_hostile_actors();
 static void update_hostile_actor();
+
+void update_set_ui_enabled(int enabled)
+{
+	g_ui_enabled = enabled;
+}
+
+int update_is_ui_enabled(void)
+{
+	return g_ui_enabled;
+}
 
 void update(int* const pressed_key)
 {
@@ -28,7 +41,9 @@ void update(int* const pressed_key)
 	}
 
 	// Player and UI related updates dependent on user input.
-	update_hud(pressed_key);
+	if (update_is_ui_enabled()) {
+		update_hud(pressed_key);
+	}
 
 	if (is_game_over()) {
 		return;
@@ -179,9 +194,29 @@ static void apply_operation_to_item(struct item* const selected_item, struct ite
 
 static void update_player(int* const pressed_key)
 {
+	struct actor* const player = get_player();
+
 	if (is_direction_button(pressed_key) || is_wait_button(pressed_key)) {
-		update_position(key_to_position_update(pressed_key), get_player());
+		update_position(key_to_position_update(pressed_key), player);
 		*pressed_key = 0;
+	}
+
+	update_player_items(player);
+}
+
+static void update_player_items(struct actor* const player)
+{
+	struct item** const inventory = actor_get_inventory(player);
+	const int inventory_size = actor_get_inventory_size();
+
+	for (int i = 0; i < inventory_size; i++) {
+		if (0 == inventory[i]) {
+			continue;
+		}
+
+		if (inventory[i]->consumable) {
+			item_charge_refill(inventory[i]);
+		}
 	}
 }
 

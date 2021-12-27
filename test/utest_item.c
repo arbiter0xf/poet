@@ -3,6 +3,8 @@
 #include "../src/actor.h"
 #include "../src/item.h"
 #include "../src/items_predefined.h"
+#include "../src/update.h"
+#include "../src/user_input.h"
 
 #if 0
 cr_log_warn("message");
@@ -94,4 +96,49 @@ Test(item, consuming_potion_has_no_effect_when_out_of_charges)
 
 	small_potion->consume(player, small_potion);
 	cr_expect(70 == actor_get_hitpoints(player));
+}
+
+Test(item, charges_can_be_restored)
+{
+	struct actor* player;
+	struct item* small_potion;
+
+	spawn_player(2, 2);
+	player = get_player();
+	small_potion = spawn_small_potion();
+
+	small_potion->consume(player, small_potion);
+	small_potion->consume(player, small_potion);
+	cr_expect(3 == item_get_charges(small_potion));
+
+	for (int i = 0; i < 9; i++) {
+		item_charge_refill(small_potion);
+	}
+	cr_expect(3 == item_get_charges(small_potion));
+
+	item_charge_refill(small_potion);
+	cr_expect(4 == item_get_charges(small_potion));
+}
+
+Test(item, update_restores_charges_to_items_owned_by_player)
+{
+	struct actor* player;
+	struct item* small_potion;
+	int pressed_key = BUTTON_WAIT;
+
+	spawn_player(2, 2);
+	player = get_player();
+	small_potion = spawn_small_potion();
+
+	actor_acquire_item(player, small_potion);
+	small_potion->consume(player, small_potion);
+	cr_expect(4 == item_get_charges(small_potion));
+
+	update_set_ui_enabled(0);
+	for (int i = 0; i < 9; i++) {
+		update(&pressed_key);
+	}
+	cr_expect(4 == item_get_charges(small_potion));
+	update(&pressed_key);
+	cr_expect(5 == item_get_charges(small_potion));
 }

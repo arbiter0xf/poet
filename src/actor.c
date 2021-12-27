@@ -43,6 +43,11 @@ struct item* actor_get_item(struct actor* const a, int index)
 	return item;
 }
 
+int actor_get_inventory_size(void)
+{
+	return ACTOR_INVENTORY_SIZE;
+}
+
 char* actor_get_name(struct actor* const a)
 {
 	assert(0 != a);
@@ -238,6 +243,12 @@ void actor_take_damage(struct actor* const a, unsigned int damage)
 			game_over();
 		}
 	}
+}
+
+void actor_acquire_item(struct actor* const a, struct item* const new_item)
+{
+	struct item** inventory = actor_get_inventory(a);
+	item_add_to_inventory(new_item, inventory);
 }
 
 void despawn_actor(struct actor* const self)

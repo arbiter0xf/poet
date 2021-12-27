@@ -10,6 +10,10 @@ struct item* g_selected_item = 0;
 struct item* g_all_items[ALL_ITEMS_SIZE] = {0};
 struct item_operation* g_item_operations[ITEM_OPERATIONS_SIZE] = {0};
 
+static void item_charge_decrement(struct item* const t);
+static void item_subcharge_increment(struct item* const t);
+static void item_charge_increment(struct item* const t);
+
 struct item** get_all_items(void)
 {
 	return g_all_items;
@@ -71,6 +75,8 @@ struct item* spawn_item_consumable(
 	all_items[first_free]->consume = consume;
 	all_items[first_free]->charges_max = charges_max;
 	all_items[first_free]->charges = charges_max;
+	all_items[first_free]->subcharges = 0;
+	all_items[first_free]->subcharges_max = 10;
 
 	return all_items[first_free];
 }
@@ -128,13 +134,13 @@ struct item* spawn_item(
 	return new_item;
 }
 
-void add_to_inventory(struct item* item_to_add, struct item** inventory)
+void item_add_to_inventory(struct item* item_to_add, struct item** inventory)
 {
 	int first_free = -1;
 #if 0
 	char str_debug[DEBUG_MESSAGE_SIZE];
 
-	strcpy(str, "add_to_inventory() adding item: ");
+	strcpy(str, "item_add_to_inventory() adding item: ");
 	strcat(str, item_to_add->name);
 	move(ROW_DEBUG_ZERO + g_row_debug_current, COL_DEBUG_ZERO);
 	g_row_debug_current++;
@@ -156,16 +162,52 @@ void transfer_inventory_content(struct item** inventory_from, struct item** inve
 	int i = 0;
 
 	while (0 != inventory_from[i] && i < ACTOR_INVENTORY_SIZE) {
-		add_to_inventory(inventory_from[i], inventory_to);
+		item_add_to_inventory(inventory_from[i], inventory_to);
 		inventory_from[0] = 0;
 		i++;
 	}
 }
 
-void item_charge_decrement(struct item* const t)
+void item_charge_spend(struct item* const t)
+{
+	if (!t->consumable) {
+		return;
+	}
+
+	item_charge_decrement(t);
+}
+
+static void item_charge_decrement(struct item* const t)
 {
 	if (t->charges > 0) {
 		t->charges--;
+	}
+}
+
+void item_charge_refill(struct item* const t)
+{
+	if (!t->consumable) {
+		return;
+	}
+
+	item_subcharge_increment(t);
+}
+
+static void item_subcharge_increment(struct item* const t)
+{
+	if (t->subcharges + 1 == t->subcharges_max) {
+		item_charge_increment(t);
+		t->subcharges = 0;
+		return;
+	}
+
+	t->subcharges++;
+}
+
+static void item_charge_increment(struct item* const t)
+{
+	if (t->charges + 1 <= t->charges_max) {
+		t->charges++;
 	}
 }
 

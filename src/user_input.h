@@ -2,6 +2,7 @@
 #define USER_INPUT_H_DEFINED
 
 #define BUTTON_QUIT 'q'
+#define BUTTON_WAIT 'w'
 
 enum cursor_movement {
 	CURSOR_NONE,
