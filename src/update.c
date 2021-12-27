@@ -166,7 +166,6 @@ static void select_operation_for_item(int cursor_index)
 	selected_item = actor_get_item(player, cursor_index);
 
 	set_selected_item(selected_item);
-	player_set_selected_item_index(cursor_index);
 	set_hud_select_item_operation(selected_item);
 }
 

@@ -9,7 +9,6 @@
 extern struct actor* g_all_actors[ALL_ACTORS_SIZE];
 extern struct actor* g_hostile_actors[ALL_ACTORS_SIZE];
 extern int g_all_actors_player_index;
-extern int g_selected_item_index;
 
 extern struct item* g_stored_player_inventory[ACTOR_INVENTORY_SIZE];
 extern struct item* g_stored_player_equipment[ACTOR_EQUIPMENT_SIZE];
@@ -29,7 +28,6 @@ int		actor_get_hitpoints(struct actor* const a);
 int		actor_get_hitpoints_max(struct actor* const a);
 int		actor_get_damage_unarmed(struct actor* const a);
 int		actor_get_damage_armed(struct actor* const a);
-int		player_get_selected_item_index(void);
 void		(*player_get_op_equip(void)) (struct item* const item_to_equip);
 void		(*player_get_op_use(void)) (struct item* const item_to_use);
 void		actor_hitpoints_increase(struct actor* const, int inc_amount);
@@ -37,7 +35,6 @@ void		actor_set_row(struct actor* const a, int new_row);
 void		actor_set_col(struct actor* const a, int new_col);
 void		actor_set_base_damage_unarmed(struct actor* const a, int base_damage);
 void		actor_set_base_damage_armed(struct actor* const a, int base_damage);
-void		player_set_selected_item_index(int index);
 int		actor_is_armed(struct actor* const a);
 int		player_has_spawned(void);
 void		player_store_state(void);

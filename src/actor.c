@@ -7,7 +7,6 @@
 struct actor* g_all_actors[ALL_ACTORS_SIZE] = {0};
 struct actor* g_hostile_actors[ALL_ACTORS_SIZE] = {0};
 int g_all_actors_player_index; // Initialized when player allocated
-int g_selected_item_index = 0;
 
 struct item* g_stored_player_inventory[ACTOR_INVENTORY_SIZE] = {0};
 struct item* g_stored_player_equipment[ACTOR_EQUIPMENT_SIZE] = {0};
@@ -106,11 +105,6 @@ int actor_get_damage_armed(struct actor* const a)
 	return a->combat.damage_armed;
 }
 
-int player_get_selected_item_index(void)
-{
-	return g_selected_item_index;
-}
-
 void actor_hitpoints_increase(struct actor* const a, int inc_amount)
 {
 	int new_hitpoints = 0;
@@ -155,11 +149,6 @@ void actor_set_base_damage_armed(struct actor* const a, int base_damage)
 {
 	assert(0 != a);
 	a->combat.base_damage_armed = base_damage;
-}
-
-void player_set_selected_item_index(int index)
-{
-	g_selected_item_index = index;
 }
 
 int actor_is_armed(struct actor* const a)
@@ -464,6 +453,8 @@ static void player_equip_item(struct item* const item_to_equip)
 	struct actor* const player = get_player();
 	int slot = EQUIPMENT_SLOT_NONE;
 
+	assert(0 != item_to_equip);
+
 	slot = item_to_equip->suitable_equipment_slot;
 	player->equipment[slot] = item_to_equip;
 
@@ -475,6 +466,8 @@ static void player_equip_item(struct item* const item_to_equip)
 static void player_use_item(struct item* const item_to_use)
 {
 	struct actor* const player = get_player();
+
+	assert(0 != item_to_use);
 
 	if (1 != item_to_use->consumable) {
 		strcpy(g_new_announcement, "Item: ");
