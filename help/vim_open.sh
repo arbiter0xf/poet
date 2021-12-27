@@ -1,3 +1,3 @@
 #!/bin/bash
 
-vim src/*.c src/*.h src/*.const Makefile /usr/include/ncurses.h test/*.c
+vim src/*.c src/*.h src/*.types Makefile /usr/include/ncurses.h test/*.c
